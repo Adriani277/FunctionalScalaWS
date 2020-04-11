@@ -1,9 +1,9 @@
 import Dependencies._
 
-ThisBuild / scalaVersion     := "2.13.1"
-ThisBuild / version          := "0.1.0-SNAPSHOT"
-ThisBuild / organization     := "com.example"
-ThisBuild / organizationName := "example"
+ThisBuild / scalaVersion := "2.13.1"
+ThisBuild / version := "0.1.0-SNAPSHOT"
+ThisBuild / organization := "com.functionalscalaws"
+ThisBuild / organizationName := "functionalscalaws"
 
 lazy val root = (project in file("."))
   .settings(
@@ -11,4 +11,8 @@ lazy val root = (project in file("."))
     libraryDependencies += scalaTest % Test
   )
 
-// See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
+libraryDependencies ++= Seq(
+  "org.typelevel" %% "cats-core"     % "2.1.1",
+  "org.typelevel" %% "cats-effect"   % "2.1.2",
+  "org.scalatest" % "scalatest_2.13" % "3.1.1" % "test"
+)
