@@ -1,20 +1,20 @@
 package functionalscalaws
 
-import cats.effect.IOApp
+import cats.effect._
 import cats.effect.{ExitCode, IO}
+import functionalscalaws.http.HttpServer
 import cats.implicits._
-import cats.effect.Sync
-import functionalscalaws.algebras.Console
+import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 
 object Main extends IOApp {
   def run(args: List[String]): IO[ExitCode] = {
-    program(Console.make[IO]) *> IO.pure(ExitCode.Success)
+    program[IO].as(ExitCode.Success)
   }
 
-  def program[F[_]: Sync](console: Console[F]): F[Unit] =
+  private def program[F[_]: ConcurrentEffect: Timer] =
     for {
-      _    <- console.putStrLn("Hello, What is your name?")
-      name <- console.getStrLn()
-      _    <- console.putStrLn(s"Nice to meet you $name")
-    } yield ()
+      logger <- Slf4jLogger.create[F]
+      _      <- logger.info("Starting HTTP server")
+      server <- HttpServer.make[F]("localhost", 8080).serve.compile.drain
+    } yield server
 }
