@@ -11,15 +11,18 @@ lazy val root = (project in file("."))
     libraryDependencies += scalaTest % Test
   )
 
-val http4sVersion = "0.21.2"
+val http4sVersion     = "0.21.2"
+val pureConfigVersion = "0.12.3"
 
 libraryDependencies ++= Seq(
-  "org.typelevel"     %% "cats-core"           % "2.1.1",
-  "org.typelevel"     %% "cats-effect"         % "2.1.2",
-  "org.http4s"        %% "http4s-dsl"          % http4sVersion,
-  "org.http4s"        %% "http4s-blaze-server" % http4sVersion,
-  "io.chrisdavenport" %% "log4cats-slf4j"      % "1.0.1",
-  "ch.qos.logback"    % "logback-classic"      % "1.2.3",
+  "org.typelevel"         %% "cats-core"              % "2.1.1",
+  "org.typelevel"         %% "cats-effect"            % "2.1.2",
+  "org.http4s"            %% "http4s-dsl"             % http4sVersion,
+  "org.http4s"            %% "http4s-blaze-server"    % http4sVersion,
+  "com.github.pureconfig" %% "pureconfig"             % pureConfigVersion,
+  "com.github.pureconfig" %% "pureconfig-cats-effect" % pureConfigVersion,
+  "io.chrisdavenport"     %% "log4cats-slf4j"         % "1.0.1",
+  "ch.qos.logback"        % "logback-classic"         % "1.2.3",
   //Test
   "org.scalatest"     %% "scalatest"       % "3.1.1" % "test",
   "org.scalatestplus" %% "scalacheck-1-14" % "3.1.1.1",
