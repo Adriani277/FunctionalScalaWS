@@ -1,27 +1,19 @@
 package functionalscalaws
 
-import cats.effect._
-import cats.effect.{ExitCode, IO}
 import functionalscalaws.http.HttpServer
-import cats.implicits._
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
-import functionalscalaws.configuration.Config
-import pureconfig.ConfigSource
+import zio.ZIO
+import zio.interop.catz._
+import zio.clock.`package`.Clock
 
-object Main extends IOApp {
-  def run(args: List[String]): IO[ExitCode] = {
-    val config = for {
-      blocker <- Blocker[IO]
-      config  <- Config.make[IO](ConfigSource.default, blocker)
-    } yield config
-
-    config.use(conf => program[IO](conf).as(ExitCode.Success))
+object Main extends CatsApp {
+  def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
+    program.provideSomeLayer[zio.ZEnv](Layers.live.appLayer).fold(_ => 1, _ => 0)
   }
 
-  private def program[F[_]: ConcurrentEffect: Timer](config: Config) =
+  private val program: ZIO[Layers.AppEnv with Clock, Throwable, Unit] =
     for {
-      logger <- Slf4jLogger.create[F]
-      _      <- logger.info("Starting HTTP server")
-      server <- HttpServer.make[F](config.http.uri, config.http.port).serve.compile.drain
+      _      <- Logging.info("Starting HTTP server")
+      blaze  <- HttpServer.make
+      server <- blaze.serve.compile.drain
     } yield server
 }

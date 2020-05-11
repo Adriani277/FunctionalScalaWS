@@ -1,28 +1,42 @@
 package functionalscalaws.http
 
-import cats.effect.IO
-import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.matchers.should.Matchers
 import org.http4s._
 import org.http4s.implicits._
-import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import org.scalacheck.Gen
 import org.http4s.Uri
+import zio.interop.catz._
+import zio.test._
+import functionalscalaws.algebras.Persistence
+import zio.ZLayer
+import functionalscalaws.algebras.Persistence.User
 
-final class HelloRoutesSpec extends AnyFunSpec with Matchers with ScalaCheckDrivenPropertyChecks {
-  describe("HelloRoutes") {
-    it("returns Ok response for /hello/<name> endpoint") {
-      forAll(Gen.alphaStr) { str =>
-        val uri = Uri.unsafeFromString(s"/hello/$str")
-        val response = HelloRoutes[IO]().helloWorldService.orNotFound
-          .run(
-            Request(method = Method.GET, uri = uri)
+object AllSuites extends DefaultRunnableSpec {
+  def spec = suite("All tests")(helloSuite)
+
+  val helloSuite = suite("HelloRoutesZIO")(
+    testM("returns Ok response for /hello/<name> endpoint") {
+      checkM(zio.test.Gen.anyInt) {
+        s =>
+          val uri = Uri.unsafeFromString(s"/hello/$s")
+          val response = HelloRoutes.helloWorldService.orNotFound
+            .run(
+              Request(method = Method.GET, uri = uri)
+            )
+
+          val test = for {
+            resp <- response
+            body <- resp.as[String]
+          } yield (resp.status, body)
+
+          val result = test.provideCustomLayer(
+            ZLayer
+              .fromEffect(zio.Ref.make(Vector(User(s, "Adriani"))))
+              .map(_.get) >>> Persistence.testPersistence
           )
-          .unsafeRunSync
 
-        response.status shouldBe Status.Ok
-        response.as[String].unsafeRunSync shouldBe s"Hello, $str"
+          assertM(result) {
+            Assertion.equalTo((Status.Ok, s"""{"id":$s,"v":"Adriani"}"""))
+          }
       }
     }
-  }
+  )
 }
