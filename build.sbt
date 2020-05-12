@@ -49,5 +49,6 @@ scalacOptions ++= Seq(
   "-Wunused:explicits",
   "-Wunused:params",
   "-Xlint:unused",
-  "-Wunused:imports"
+  "-Wunused:imports",
+  "-Ymacro-annotations"
 )
