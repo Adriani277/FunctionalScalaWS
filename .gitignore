@@ -1,3 +1,6 @@
 .bloop
 .metals
 target
+.bsp/sbt.json
+metals.sbt
+project/metals.sbt
