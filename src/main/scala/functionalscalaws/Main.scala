@@ -1,6 +1,7 @@
 package functionalscalaws
 
 import functionalscalaws.http.HttpServer
+import functionalscalaws.logging._
 import zio.ZIO
 import zio.interop.catz._
 import zio.clock.`package`.Clock
@@ -12,7 +13,7 @@ object Main extends zio.App {
 
   private val program: ZIO[Layers.AppEnv with Clock, Throwable, Unit] =
     for {
-      _      <- Logging.info("Starting HTTP server")
+      _      <- info("Starting HTTP server")
       blaze  <- HttpServer.make
       server <- blaze.serve.compile.drain
     } yield server

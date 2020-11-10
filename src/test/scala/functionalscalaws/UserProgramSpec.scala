@@ -4,7 +4,7 @@ import zio.test._
 import functionalscalaws.algebras.Persistence.User
 import zio.ZLayer
 import functionalscalaws.algebras.Persistence
-import functionalscalaws.Logging
+import functionalscalaws.logging._
 import zio._
 import zio.test._
 import zio.test.mock._
@@ -14,7 +14,7 @@ object UserProgramSpec extends DefaultRunnableSpec {
   def spec = suite("UserProgram") {
     testM("getLoggedUser") {
       checkM(Gen.anyInt) { id =>
-        val mockEnv: ULayer[Logging.Logging] = LoggingMock.Info(
+        val mockEnv: ULayer[Logging] = LoggingMock.Info(
           equalTo(s"Retrieving User $id"),
           unit
         ) andThen
@@ -33,15 +33,15 @@ object UserProgramSpec extends DefaultRunnableSpec {
   }
 }
 
-object LoggingMock extends Mock[Logging.Logging] {
+object LoggingMock extends Mock[Logging] {
 
   object Info  extends Effect[String, Nothing, Unit]
   object Error extends Effect[String, Nothing, Unit]
 
-  val compose: zio.URLayer[Has[Proxy], Logging.Logging] =
+  val compose: zio.URLayer[Has[Proxy], Logging] =
     ZLayer.fromService(
       invoke =>
-        new Logging.Service {
+        new Service {
           def info(s: String): zio.UIO[Unit]  = invoke(Info, s)
           def error(s: String): zio.UIO[Unit] = invoke(Error, s)
         }

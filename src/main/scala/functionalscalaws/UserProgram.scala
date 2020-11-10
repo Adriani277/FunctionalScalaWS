@@ -3,15 +3,15 @@ package functionalscalaws
 import functionalscalaws.algebras.Persistence
 import zio.ZIO
 import functionalscalaws.algebras.Persistence._
-import functionalscalaws.Logging
+import functionalscalaws.logging._
 
 object UserProgram {
   def getUserWithLogging(
       id: Int
-  ): ZIO[Persistence.UserPersistence with Logging.Logging, Throwable, User] =
+  ): ZIO[Persistence.UserPersistence with Logging, Throwable, User] =
     for {
-      _    <- Logging.info(s"Retrieving User $id")
+      _    <- info(s"Retrieving User $id")
       user <- get[User](id)
-      _    <- Logging.info(s"User successfully retrieved")
+      _    <- info(s"User successfully retrieved")
     } yield user
 }

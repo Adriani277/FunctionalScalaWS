@@ -1,16 +1,12 @@
 package functionalscalaws
 
-import zio.ZIO
-import zio.UIO
-import zio.Has
-import zio.ZLayer
+import zio._
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import zio.console.`package`._
-import zio.Task
 import zio.interop.catz._
 
-object Logging {
-  type Logging = Has[Logging.Service]
+package object logging {
+  type Logging = Has[Service]
 
   trait Service {
     def info(s: String): UIO[Unit]
