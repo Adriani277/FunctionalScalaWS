@@ -4,11 +4,11 @@ import functionalscalaws.http.HttpServer
 import zio.ZIO
 import zio.interop.catz._
 import zio.clock.`package`.Clock
+import zio.ExitCode
 
-object Main extends CatsApp {
-  def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
-    program.provideSomeLayer[zio.ZEnv](Layers.live.appLayer).fold(_ => 1, _ => 0)
-  }
+object Main extends zio.App {
+  def run(args: List[String]): zio.URIO[zio.ZEnv, ExitCode] =
+    program.provideSomeLayer[zio.ZEnv](Layers.live.appLayer).exitCode
 
   private val program: ZIO[Layers.AppEnv with Clock, Throwable, Unit] =
     for {

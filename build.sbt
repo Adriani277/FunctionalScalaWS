@@ -16,8 +16,8 @@ val pureConfigVersion = "0.12.3"
 
 libraryDependencies ++= Seq(
   "org.typelevel"         %% "cats-core"              % "2.1.1",
-  "dev.zio"               %% "zio"                    % "1.0.0-RC18-2",
-  "dev.zio"               %% "zio-interop-cats"       % "2.0.0.0-RC13",
+  "dev.zio"               %% "zio"                    % "1.0.3",
+  "dev.zio"               %% "zio-interop-cats"       % "2.2.0.1",
   "org.typelevel"         %% "cats-effect"            % "2.1.2",
   "org.http4s"            %% "http4s-dsl"             % http4sVersion,
   "org.http4s"            %% "http4s-blaze-server"    % http4sVersion,
@@ -28,8 +28,8 @@ libraryDependencies ++= Seq(
   "org.http4s"            %% "http4s-circe"           % http4sVersion,
   "io.circe"              %% "circe-generic"          % "0.12.3",
   //Test
-  "dev.zio"           %% "zio-test"        % "1.0.0-RC18-2" % "test",
-  "dev.zio"           %% "zio-test-sbt"    % "1.0.0-RC18-2" % "test",
+  "dev.zio"           %% "zio-test"        % "1.0.3" % "test",
+  "dev.zio"           %% "zio-test-sbt"    % "1.0.3" % "test",
   "org.scalatest"     %% "scalatest"       % "3.1.1" % "test",
   "org.scalatestplus" %% "scalacheck-1-14" % "3.1.1.1",
   "org.scalacheck"    %% "scalacheck"      % "1.14.3",
