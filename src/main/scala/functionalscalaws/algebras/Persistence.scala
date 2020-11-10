@@ -5,11 +5,11 @@ import zio.ZLayer
 import zio.ZRef
 import zio.ZIO
 import zio.Has
-import izumi.reflect.Tags.Tag
 import zio.RIO
 import io.circe.generic.semiauto._
 import zio.clock.`package`.Clock
 import zio.`package`.Ref
+import izumi.reflect.Tag
 
 object Persistence {
   final case class User(id: Int, v: String)
