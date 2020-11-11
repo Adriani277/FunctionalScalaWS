@@ -13,4 +13,7 @@ object UserProgram {
       user <- get[User](id)
       _    <- info(s"User successfully retrieved")
     } yield user
+
+  def getUserWithoutLogging(id: Int): ZIO[UserPersistence, Throwable, User] =
+    get[User](id)
 }
