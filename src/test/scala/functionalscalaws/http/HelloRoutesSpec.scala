@@ -5,9 +5,8 @@ import org.http4s.implicits._
 import org.http4s.Uri
 import zio.interop.catz._
 import zio.test._
-import functionalscalaws.algebras.Persistence
+import functionalscalaws.persistence._
 import zio.ZLayer
-import functionalscalaws.algebras.Persistence.User
 
 object AllSuites extends DefaultRunnableSpec {
   def spec = suite("All tests")(helloSuite)
@@ -30,7 +29,7 @@ object AllSuites extends DefaultRunnableSpec {
           val result = test.provideCustomLayer(
             ZLayer
               .fromEffect(zio.Ref.make(Vector(User(s, "Adriani"))))
-              .map(_.get) >>> Persistence.testPersistence
+              .map(_.get) >>> testPersistence
           )
 
           assertM(result) {

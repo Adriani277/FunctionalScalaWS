@@ -1,9 +1,8 @@
 package functionalscalaws
 
 import zio.test._
-import functionalscalaws.algebras.Persistence.User
 import zio.ZLayer
-import functionalscalaws.algebras.Persistence
+import functionalscalaws.persistence
 import functionalscalaws.logging._
 import zio._
 import zio.test._
@@ -20,13 +19,13 @@ object UserProgramSpec extends DefaultRunnableSpec {
         ) andThen
           LoggingMock.Info(equalTo("User successfully retrieved"), unit)
 
-        val mockPersistence: ULayer[Persistence.UserPersistence] =
-          PersistenceMock.Get(equalTo(id), value(User(id, "Adriani")))
+        val mockPersistence: ULayer[persistence.UserPersistence] =
+          PersistenceMock.Get(equalTo(id), value(persistence.User(id, "Adriani")))
 
         val result = UserProgram.getUserWithLogging(id).provideLayer(mockPersistence ++ mockEnv)
 
         assertM(result)(
-          Assertion.equalTo(User(id, "Adriani"))
+          Assertion.equalTo(persistence.User(id, "Adriani"))
         )
       }
     }
@@ -48,15 +47,17 @@ object LoggingMock extends Mock[Logging] {
     )
 }
 
-object PersistenceMock extends Mock[Persistence.UserPersistence] {
+object PersistenceMock extends Mock[persistence.UserPersistence] {
+  import persistence._
+
   object Create extends Effect[User, Nothing, User]
   object Delete extends Effect[Int, Nothing, Boolean]
   object Get    extends Effect[Int, Nothing, User]
 
-  val compose: URLayer[Has[Proxy], Persistence.UserPersistence] =
+  val compose: URLayer[Has[Proxy], UserPersistence] =
     ZLayer.fromService(
       invoke =>
-        new Persistence.Service[User] {
+        new Service[User] {
           def create(entity: User): zio.Task[User] = invoke(Create, entity)
           def delete(id: Int): zio.Task[Boolean]   = invoke(Delete, id)
           def get(id: Int): zio.Task[User]         = invoke(Get, id)
