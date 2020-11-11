@@ -1,21 +1,16 @@
-// package functionalscalaws.configuration
+package functionalscalaws.configuration
 
-// import org.scalatest.funspec.AnyFunSpec
-// import functionalscalaws.configuration.Config
-// import cats.effect.IO
-// import pureconfig.ConfigSource
-// import cats.effect.Blocker
-// import scala.concurrent.ExecutionContext
-// import org.scalatest.matchers.should.Matchers
+import functionalscalaws.configuration._
+import zio._
+import zio.test._
+import functionalscalaws.Config
 
-// class ConfigSpec extends AnyFunSpec with Matchers {
-//   describe("Config") {
-//     it("Loads the config if config file is correct") {
-//       implicit val cs = IO.contextShift(ExecutionContext.global)
-//       Blocker[IO]
-//         .flatMap(Config.make[IO](ConfigSource.default, _))
-//         .use(IO.pure)
-//         .unsafeRunSync() shouldBe Config(Config.HttpConfig("localhost", 8080))
-//     }
-//   }
-// }
+object ConfigSpec extends DefaultRunnableSpec {
+  def spec = suite("config") {
+    testM("load") {
+      assertM(load.provideLayer(liveConfig ++ blocking.Blocking.live))(
+        Assertion.isSubtype[Config](Assertion.anything)
+      )
+    }
+  }
+}
