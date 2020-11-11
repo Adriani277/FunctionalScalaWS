@@ -4,7 +4,7 @@ import functionalscalaws.http.HttpServer
 import functionalscalaws.logging._
 import zio.ZIO
 import zio.interop.catz._
-import zio.clock.`package`.Clock
+import zio.clock.Clock
 import zio.ExitCode
 
 object Main extends zio.App {
