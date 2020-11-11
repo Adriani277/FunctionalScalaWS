@@ -1,9 +1,11 @@
 package functionalscalaws.http
 
-import org.http4s.HttpRoutes, org.http4s._, org.http4s.dsl.Http4sDsl
-import zio.interop.catz._
 import functionalscalaws.persistence._
+import org.http4s.HttpRoutes
+import org.http4s._
 import org.http4s.circe._
+import org.http4s.dsl.Http4sDsl
+import zio.interop.catz._
 
 object HelloRoutes extends Http4sDsl[UserPersistenceRIO] {
   val helloWorldService = HttpRoutes.of[UserPersistenceRIO] {

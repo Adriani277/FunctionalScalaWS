@@ -1,16 +1,16 @@
 package functionalscalaws.http
 
-import org.http4s.server.blaze.BlazeServerBuilder
+import functionalscalaws.Layers
+import functionalscalaws.configuration
 import functionalscalaws.http.HelloRoutes
-import org.http4s.server.blaze._
+import functionalscalaws.persistence.UserPersistenceRIO
 import org.http4s.implicits._
 import org.http4s.server.Router
-import zio.interop.catz._
+import org.http4s.server.blaze.BlazeServerBuilder
+import org.http4s.server.blaze._
 import zio.ZIO
-import functionalscalaws.configuration
-import functionalscalaws.persistence.UserPersistenceRIO
 import zio.clock.`package`.Clock
-import functionalscalaws.Layers
+import zio.interop.catz._
 
 object HttpServer {
   val make = for {

@@ -1,8 +1,8 @@
 package functionalscalaws
 
-import zio.ZIO
-import functionalscalaws.persistence._
 import functionalscalaws.logging._
+import functionalscalaws.persistence._
+import zio.ZIO
 
 object UserProgram {
   def getUserWithLogging(

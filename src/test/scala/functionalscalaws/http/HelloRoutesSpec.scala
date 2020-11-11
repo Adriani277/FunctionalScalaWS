@@ -1,12 +1,12 @@
 package functionalscalaws.http
 
+import functionalscalaws.persistence._
+import org.http4s.Uri
 import org.http4s._
 import org.http4s.implicits._
-import org.http4s.Uri
+import zio.ZLayer
 import zio.interop.catz._
 import zio.test._
-import functionalscalaws.persistence._
-import zio.ZLayer
 
 object AllSuites extends DefaultRunnableSpec {
   def spec = suite("All tests")(helloSuite)

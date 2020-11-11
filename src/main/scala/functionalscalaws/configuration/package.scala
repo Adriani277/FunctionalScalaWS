@@ -2,7 +2,7 @@ package functionalscalaws
 
 import pureconfig._
 import pureconfig.generic.auto._
-import zio.{ZLayer, Has, ZIO}
+import zio._
 import zio.blocking._
 
 final case class Config(http: Config.HttpConfig)

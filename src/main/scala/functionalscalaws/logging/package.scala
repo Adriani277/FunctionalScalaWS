@@ -1,7 +1,7 @@
 package functionalscalaws
 
-import zio._
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
+import zio._
 import zio.console.`package`._
 import zio.interop.catz._
 

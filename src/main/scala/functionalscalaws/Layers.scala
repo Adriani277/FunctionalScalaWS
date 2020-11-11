@@ -1,10 +1,10 @@
 package functionalscalaws
 
-import functionalscalaws.logging._
-import zio.blocking.Blocking
 import functionalscalaws.configuration._
+import functionalscalaws.logging._
 import functionalscalaws.persistence._
 import zio.ZLayer
+import zio.blocking.Blocking
 
 object Layers {
   type Layer0 = Logging with Blocking

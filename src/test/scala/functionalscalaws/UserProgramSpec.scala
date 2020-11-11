@@ -1,14 +1,13 @@
 package functionalscalaws
 
-import zio.test._
-import zio.ZLayer
-import functionalscalaws.persistence
 import functionalscalaws.logging._
+import functionalscalaws.persistence
+import zio.ZLayer
 import zio._
-import zio.test._
-import zio.test.mock._
 import zio.test.Assertion._
+import zio.test._
 import zio.test.mock.Expectation._
+import zio.test.mock._
 object UserProgramSpec extends DefaultRunnableSpec {
   def spec = suite("UserProgram") {
     testM("getLoggedUser") {

@@ -2,10 +2,10 @@ package functionalscalaws
 
 import functionalscalaws.http.HttpServer
 import functionalscalaws.logging._
-import zio.ZIO
-import zio.interop.catz._
-import zio.clock.Clock
 import zio.ExitCode
+import zio.ZIO
+import zio.clock.Clock
+import zio.interop.catz._
 
 object Main extends zio.App {
   def run(args: List[String]): zio.URIO[zio.ZEnv, ExitCode] =

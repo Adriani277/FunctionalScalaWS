@@ -1,15 +1,10 @@
 package functionalscalaws
 
-import zio.Task
-import zio.ZLayer
-import zio.ZRef
-import zio.ZIO
-import zio.Has
-import zio.RIO
 import io.circe.generic.semiauto._
-import zio.clock.`package`.Clock
-import zio.`package`.Ref
 import izumi.reflect.Tag
+import zio._
+import zio.`package`.Ref
+import zio.clock.`package`.Clock
 
 package object persistence {
   final case class User(id: Int, v: String)
