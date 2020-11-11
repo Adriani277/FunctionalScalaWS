@@ -23,8 +23,8 @@ package object persistence {
     def delete(id: Int): Task[Boolean]
   }
 
-  def inMemory = ZLayer.fromEffect(
-    ZRef.make(Vector.empty[User]).map { mem =>
+  def inMemory(storage: Vector[User]) = ZLayer.fromEffect(
+    ZRef.make(storage).map { mem =>
       new Service[User] {
         def get(id: Int): zio.Task[User] =
           mem.get.flatMap(
