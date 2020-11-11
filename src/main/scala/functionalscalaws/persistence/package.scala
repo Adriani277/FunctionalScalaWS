@@ -1,4 +1,4 @@
-package functionalscalaws.algebras
+package functionalscalaws
 
 import zio.Task
 import zio.ZLayer
@@ -11,7 +11,7 @@ import zio.clock.`package`.Clock
 import zio.`package`.Ref
 import izumi.reflect.Tag
 
-object Persistence {
+package object persistence {
   final case class User(id: Int, v: String)
   object User {
     implicit val encoder = deriveEncoder[User]

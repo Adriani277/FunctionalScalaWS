@@ -1,4 +1,4 @@
-package functionalscalaws.configuration
+package functionalscalaws
 
 import pureconfig._
 import pureconfig.generic.auto._
@@ -10,8 +10,8 @@ object Config {
   final case class HttpConfig(uri: String, port: Int)
 }
 
-object ZConfig {
-  type ZConfig = Has[ZConfig.Service]
+package object configuration {
+  type ZConfig = Has[Service]
 
   trait Service {
     def load: ZIO[Any, Throwable, Config]
@@ -26,6 +26,4 @@ object ZConfig {
 
   def load: ZIO[ZConfig with Blocking, Throwable, Config] =
     ZIO.accessM(_.get.load)
-
-  // val testZConfig: ZLayer[Any, Nothing, ZConfig] = ZLayer.succeed(???)
 }
