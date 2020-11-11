@@ -1,9 +1,9 @@
 package functionalscalaws.configuration
 
+import functionalscalaws.Config
 import functionalscalaws.configuration._
 import zio._
 import zio.test._
-import functionalscalaws.Config
 
 object ConfigSpec extends DefaultRunnableSpec {
   def spec = suite("config") {
