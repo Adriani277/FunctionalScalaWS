@@ -16,7 +16,7 @@ val pureConfigVersion = "0.12.3"
 
 ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.4.3"
 
-coverageExcludedPackages := "functionalscalaws.Main; functionalscalaws.http.HttpServer"
+coverageExcludedPackages := "functionalscalaws.Main; functionalscalaws.http.HttpServer; functionalscalaws.Layers"
 
 libraryDependencies ++= Seq(
   "org.typelevel"     %% "cats-core"           % "2.1.1",
