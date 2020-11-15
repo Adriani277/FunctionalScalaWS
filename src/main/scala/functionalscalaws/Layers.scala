@@ -4,16 +4,12 @@ import functionalscalaws.configuration._
 import functionalscalaws.logging._
 import functionalscalaws.persistence._
 import zio.ZLayer
-import zio.blocking.Blocking
+import zio.config.ZConfig
 
 object Layers {
-  type Layer0 = Logging with Blocking
-  type Layer1 = Layer0 with ZConfig with Persistence[User]
-  type AppEnv = Layer1
+  type AppEnv = Logging with ZConfig[Config] with Persistence[User]
 
   object live {
-    val layer0: ZLayer[Blocking, Throwable, Layer0]   = Blocking.any ++ logLogger
-    val layer1: ZLayer[Layer0, Throwable, Layer1]     = liveConfig ++ inMemory(Vector.empty) ++ ZLayer.identity
-    val appLayer: ZLayer[Blocking, Throwable, AppEnv] = layer0 >>> layer1
+    val appLayer: ZLayer[Any, Throwable, AppEnv] = liveConfig ++ logLogger ++ (logLogger >>> inMemory(Vector.empty))
   }
 }
