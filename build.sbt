@@ -16,6 +16,8 @@ val pureConfigVersion = "0.12.3"
 
 ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.4.3"
 
+coverageExcludedPackages := "functionalscalaws.Main; functionalscalaws.http.HttpServer"
+
 libraryDependencies ++= Seq(
   "org.typelevel"     %% "cats-core"           % "2.1.1",
   "dev.zio"           %% "zio"                 % "1.0.3",
