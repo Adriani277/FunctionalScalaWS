@@ -1,11 +1,10 @@
 package functionalscalaws.logging
 
-import zio.test.DefaultRunnableSpec
-
-import zio.test._
-import zio.test.Assertion._
-import zio.test.mock.Expectation._
 import functionalscalaws.logging._
+import zio.test.Assertion._
+import zio.test.DefaultRunnableSpec
+import zio.test._
+import zio.test.mock.Expectation._
 import zio.test.mock.MockConsole
 
 object LoggingSpec extends DefaultRunnableSpec {

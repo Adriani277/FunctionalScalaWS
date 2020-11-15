@@ -1,9 +1,9 @@
 package functionalscalaws.persistence
 
 import functionalscalaws.persistence._
+import zio._
 import zio.test.Assertion._
 import zio.test._
-import zio._
 
 object PersistenceSpec extends DefaultRunnableSpec {
   val userGen = for {

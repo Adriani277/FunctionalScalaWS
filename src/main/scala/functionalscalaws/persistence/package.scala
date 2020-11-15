@@ -1,10 +1,10 @@
 package functionalscalaws
 
+import functionalscalaws.logging._
 import io.circe.generic.semiauto._
 import izumi.reflect.Tag
 import zio._
 import zio.clock.Clock
-import functionalscalaws.logging._
 
 package object persistence {
   final case class User(id: Int, v: String)
