@@ -43,25 +43,6 @@ package object persistence {
       }
   )
 
-  def testPersistence =
-    ZLayer.fromFunction[Ref[Vector[User]], Service[User]](
-      mem =>
-        new Service[User] {
-          def get(id: Int): zio.Task[User] =
-            mem.get.flatMap(
-              users =>
-                Task
-                  .require(new RuntimeException("Not found"))(Task.succeed(users.find(_.id == id)))
-            )
-
-          def create(entity: User): zio.Task[User] =
-            mem.update(_ :+ entity).map(_ => entity)
-
-          def delete(id: Int): zio.Task[Boolean] =
-            mem.modify(mem => true -> mem.filterNot(_.id == id))
-        }
-    )
-
   def get[A: Tag](id: Int): ZIO[Persistence[A], Throwable, A] =
     ZIO.accessM(_.get.get(id))
 
