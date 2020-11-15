@@ -3,6 +3,7 @@ package functionalscalaws.persistence
 import functionalscalaws.persistence._
 import zio.test.Assertion._
 import zio.test._
+import zio._
 
 object PersistenceSpec extends DefaultRunnableSpec {
   val userGen = for {
@@ -19,7 +20,7 @@ object PersistenceSpec extends DefaultRunnableSpec {
       checkM(Gen.anyInt) { id =>
         assertM(get[User](id).run)(
           fails(isSubtype[RuntimeException](anything))
-        ).provideLayer(inMemory(Vector.empty))
+        ).provideLayer(testLogger >>> inMemory(Vector.empty))
       }
     }
 
@@ -27,7 +28,7 @@ object PersistenceSpec extends DefaultRunnableSpec {
       checkM(usersGen) { users =>
         assertM(get[User](users.head.id))(
           equalTo(users.head)
-        ).provideLayer(inMemory(users))
+        ).provideLayer(testLogger >>> inMemory(users))
       }
     }
   }
@@ -37,7 +38,7 @@ object PersistenceSpec extends DefaultRunnableSpec {
       checkM(userGen) { user =>
         assertM(create[User](user))(
           equalTo(user)
-        ).provideLayer(inMemory(Vector.empty))
+        ).provideLayer(testLogger >>> inMemory(Vector.empty))
       }
     }
 
@@ -46,8 +47,15 @@ object PersistenceSpec extends DefaultRunnableSpec {
         val newUser = user2.copy(user1.id)
         assertM(create[User](user1) *> create[User](newUser))(
           equalTo(newUser)
-        ).provideLayer(inMemory(Vector.empty))
+        ).provideLayer(testLogger >>> inMemory(Vector.empty))
       }
     }
+  }
+
+  private val testLogger = ZLayer.fromEffect {
+    UIO.succeed(new functionalscalaws.logging.Service {
+      def info(s: String): zio.UIO[Unit]  = UIO.unit
+      def error(s: String): zio.UIO[Unit] = UIO.unit
+    })
   }
 }

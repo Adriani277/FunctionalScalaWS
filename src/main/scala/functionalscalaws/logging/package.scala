@@ -24,8 +24,8 @@ package object logging {
     ZLayer.fromFunction(
       console =>
         new Service {
-          override def info(s: String): zio.UIO[Unit]  = console.get.putStr(s"info - $s")
-          override def error(s: String): zio.UIO[Unit] = console.get.putStr(s"error - $s")
+          override def info(s: String): zio.UIO[Unit]  = console.get.putStrLn(s"info - $s")
+          override def error(s: String): zio.UIO[Unit] = console.get.putStrLn(s"error - $s")
         }
     )
 

@@ -3,8 +3,8 @@ package functionalscalaws
 import io.circe.generic.semiauto._
 import izumi.reflect.Tag
 import zio._
-import zio.`package`.Ref
-import zio.clock.`package`.Clock
+import zio.clock.Clock
+import functionalscalaws.logging._
 
 package object persistence {
   final case class User(id: Int, v: String)
@@ -24,21 +24,23 @@ package object persistence {
   }
 
   def inMemory(storage: Vector[User]) = ZLayer.fromEffect(
-    ZRef.make(storage).map { mem =>
-      new Service[User] {
-        def get(id: Int): zio.Task[User] =
-          mem.get.flatMap(
-            users =>
-              Task.require(new RuntimeException("Not found"))(Task.succeed(users.find(_.id == id)))
-          )
+    info("Starting in-memory repository") *>
+      ZRef.make(storage).map { mem =>
+        new Service[User] {
+          def get(id: Int): zio.Task[User] =
+            mem.get.flatMap(
+              users =>
+                Task
+                  .require(new RuntimeException("Not found"))(Task.succeed(users.find(_.id == id)))
+            )
 
-        def create(entity: User): zio.Task[User] =
-          mem.update(_ :+ entity).map(_ => entity)
+          def create(entity: User): zio.Task[User] =
+            mem.update(_ :+ entity).map(_ => entity)
 
-        def delete(id: Int): zio.Task[Boolean] =
-          mem.modify(mem => true -> mem.filterNot(_.id == id))
+          def delete(id: Int): zio.Task[Boolean] =
+            mem.modify(mem => true -> mem.filterNot(_.id == id))
+        }
       }
-    }
   )
 
   def testPersistence =
