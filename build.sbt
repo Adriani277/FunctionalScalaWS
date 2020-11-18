@@ -19,12 +19,11 @@ ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports"
 coverageExcludedPackages := "functionalscalaws.Main; functionalscalaws.http.HttpServer; functionalscalaws.Layers"
 
 libraryDependencies ++= Seq(
-  "org.typelevel"     %% "cats-core"           % "2.1.1",
   "dev.zio"           %% "zio"                 % "1.0.3",
   "dev.zio"           %% "zio-interop-cats"    % "2.2.0.1",
   "dev.zio"           %% "zio-config-magnolia" % "1.0.0-RC29",
   "dev.zio"           %% "zio-config-typesafe" % "1.0.0-RC29",
-  "org.typelevel"     %% "cats-effect"         % "2.1.2",
+  "dev.zio"           %% "zio-logging-slf4j"   % "0.5.3",
   "org.http4s"        %% "http4s-dsl"          % http4sVersion,
   "org.http4s"        %% "http4s-blaze-server" % http4sVersion,
   "io.chrisdavenport" %% "log4cats-slf4j"      % "1.0.1",

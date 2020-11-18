@@ -1,16 +1,16 @@
 package functionalscalaws
 
-import functionalscalaws.logging._
 import functionalscalaws.persistence._
 import zio.ZIO
+import zio.logging._
 
 object UserProgram {
   def getUserWithLogging(
       id: Int
   ): ZIO[UserPersistence with Logging, Throwable, User] =
     for {
-      _    <- info(s"Retrieving User $id")
+      _    <- log.info(s"Retrieving User $id")
       user <- get[User](id)
-      _    <- info(s"User successfully retrieved")
+      _    <- log.info(s"User successfully retrieved")
     } yield user
 }

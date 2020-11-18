@@ -2,6 +2,7 @@ package functionalscalaws.persistence
 
 import functionalscalaws.persistence._
 import zio._
+import zio.logging.LogContext
 import zio.test.Assertion._
 import zio.test._
 
@@ -53,9 +54,10 @@ object PersistenceSpec extends DefaultRunnableSpec {
   }
 
   private val testLogger = ZLayer.fromEffect {
-    UIO.succeed(new functionalscalaws.logging.Service {
-      def info(s: String): zio.UIO[Unit]  = UIO.unit
-      def error(s: String): zio.UIO[Unit] = UIO.unit
+    UIO.succeed(new zio.logging.Logger[String] {
+      def locally[R1, E, A1](f: LogContext => LogContext)(zio: ZIO[R1, E, A1]): ZIO[R1, E, A1] = zio
+      def log(line: => String): zio.UIO[Unit]                                                  = UIO.unit
+      def logContext: zio.UIO[LogContext]                                                      = UIO(LogContext.empty)
     })
   }
 }

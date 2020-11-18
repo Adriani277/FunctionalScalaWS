@@ -1,6 +1,8 @@
 package functionalscalaws
 
-import functionalscalaws.logging._
+import java.time.OffsetDateTime
+
+import functionalscalaws.logging.consoleLogger
 import functionalscalaws.persistence
 import zio.ZLayer
 import zio._
@@ -12,16 +14,18 @@ object UserProgramSpec extends DefaultRunnableSpec {
   def spec = suite("UserProgram") {
     testM("getLoggedUser") {
       checkM(Gen.anyInt) { id =>
-        val mockEnv: ULayer[Logging] = LoggingMock.Info(
-          equalTo(s"Retrieving User $id"),
-          unit
-        ) andThen
-          LoggingMock.Info(equalTo("User successfully retrieved"), unit)
+        val loggerBehaviour = MockClock.CurrentDateTime(value(OffsetDateTime.MAX)) andThen
+          MockConsole
+            .PutStrLn(containsString(s"Retrieving User $id"), value(())) andThen
+          MockClock.CurrentDateTime(value(OffsetDateTime.MAX)) andThen
+          MockConsole.PutStrLn(containsString("User successfully retrieved"), value(()))
+
+        val mockLogger = loggerBehaviour >>> consoleLogger
 
         val mockPersistence: ULayer[persistence.UserPersistence] =
           PersistenceMock.Get(equalTo(id), value(persistence.User(id, "Adriani")))
 
-        val result = UserProgram.getUserWithLogging(id).provideLayer(mockPersistence ++ mockEnv)
+        val result = UserProgram.getUserWithLogging(id).provideLayer(mockPersistence ++ mockLogger)
 
         assertM(result)(
           Assertion.equalTo(persistence.User(id, "Adriani"))
@@ -29,21 +33,6 @@ object UserProgramSpec extends DefaultRunnableSpec {
       }
     }
   }
-}
-
-object LoggingMock extends Mock[Logging] {
-
-  object Info  extends Effect[String, Nothing, Unit]
-  object Error extends Effect[String, Nothing, Unit]
-
-  val compose: zio.URLayer[Has[Proxy], Logging] =
-    ZLayer.fromService(
-      invoke =>
-        new Service {
-          def info(s: String): zio.UIO[Unit]  = invoke(Info, s)
-          def error(s: String): zio.UIO[Unit] = invoke(Error, s)
-        }
-    )
 }
 
 object PersistenceMock extends Mock[persistence.UserPersistence] {

@@ -1,10 +1,10 @@
 package functionalscalaws
 
-import functionalscalaws.logging._
 import io.circe.generic.semiauto._
 import izumi.reflect.Tag
 import zio._
 import zio.clock.Clock
+import zio.logging._
 
 package object persistence {
   final case class User(id: Int, v: String)
@@ -24,7 +24,7 @@ package object persistence {
   }
 
   def inMemory(storage: Vector[User]) = ZLayer.fromEffect(
-    info("Starting in-memory repository") *>
+    log.info("Starting in-memory repository") *>
       ZRef.make(storage).map { mem =>
         new Service[User] {
           def get(id: Int): zio.Task[User] =

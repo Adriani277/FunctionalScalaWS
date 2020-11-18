@@ -1,15 +1,15 @@
 package functionalscalaws.http
 
+import functionalscalaws.PersistenceMock
 import functionalscalaws.persistence._
 import org.http4s.Uri
 import org.http4s._
 import org.http4s.implicits._
 import zio._
 import zio.interop.catz._
-import zio.test._
 import zio.test.Assertion._
+import zio.test._
 import zio.test.mock.Expectation._
-import functionalscalaws.PersistenceMock
 
 object AllSuites extends DefaultRunnableSpec {
   def spec = suite("All tests")(helloSuite)

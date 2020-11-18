@@ -1,9 +1,9 @@
 package functionalscalaws
 
 import functionalscalaws.http.HttpServer
-import functionalscalaws.logging._
 import zio._
 import zio.clock.Clock
+import zio.logging._
 
 object Main extends zio.App {
   def run(args: List[String]): zio.URIO[zio.ZEnv, ExitCode] =
@@ -11,10 +11,10 @@ object Main extends zio.App {
 
   private val program: ZIO[Layers.AppEnv with Clock, Throwable, Unit] =
     for {
-      _      <- info("Starting HTTP server")
+      _      <- log.info("Starting HTTP server")
       server <- HttpServer.make
       f      <- server.useForever.fork
-      _      <- info("HTTP server started")
+      _      <- log.info("HTTP server started")
       _      <- f.await
     } yield ()
 }
