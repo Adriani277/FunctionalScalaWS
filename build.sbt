@@ -23,6 +23,8 @@ libraryDependencies ++= Seq(
   "dev.zio"           %% "zio-interop-cats"    % "2.2.0.1",
   "dev.zio"           %% "zio-config-magnolia" % "1.0.0-RC29",
   "dev.zio"           %% "zio-config-typesafe" % "1.0.0-RC29",
+  "org.tpolecat"      %% "doobie-core"         % "0.8.8",
+  "org.tpolecat"      %% "doobie-hikari"       % "0.8.8",
   "dev.zio"           %% "zio-logging-slf4j"   % "0.5.3",
   "org.http4s"        %% "http4s-dsl"          % http4sVersion,
   "org.http4s"        %% "http4s-blaze-server" % http4sVersion,
