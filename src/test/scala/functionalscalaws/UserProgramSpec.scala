@@ -21,11 +21,12 @@ object UserProgramSpec extends DefaultRunnableSpec {
           MockConsole.PutStrLn(containsString("User successfully retrieved"), value(()))
 
         val mockLogger = loggerBehaviour >>> consoleLogger
-
         val mockPersistence: ULayer[persistence.UserPersistence] =
           PersistenceMock.Get(equalTo(id), value(persistence.User(id, "Adriani")))
 
-        val result = UserProgram.getUserWithLogging(id).provideLayer(mockPersistence ++ mockLogger)
+        val result = UserProgram
+          .getUserWithLogging(id)
+          .provideLayer(mockPersistence ++ mockLogger >>> UserProgram.Service.live)
 
         assertM(result)(
           Assertion.equalTo(persistence.User(id, "Adriani"))
