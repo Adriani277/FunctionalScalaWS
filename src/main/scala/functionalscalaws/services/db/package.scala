@@ -17,15 +17,15 @@ package object db {
   }
 
   object Service {
-    val paymentDataLive: ZLayer[Transactor[Task], Nothing, PaymentRepository] =
+    val paymentDataLive: ZLayer[Has[Transactor[Task]], Nothing, PaymentRepository] =
       ZLayer.fromFunction(
-        (transactor: Transactor[Task]) =>
+        transactor =>
           new Service[PaymentData] {
             def create(payment: Payment): UIO[PaymentData] =
               (for {
                 id     <- UIO(UUID.randomUUID())
-                _      <- Database.insert(id, payment).run.transact(transactor).orDie
-                result <- Database.select(id).unique.transact(transactor).orDie
+                _      <- Database.insert(id, payment).run.transact(transactor.get).orDie
+                result <- Database.select(id).unique.transact(transactor.get).orDie
               } yield result)
 
             def update(amountUpdate: AmountUpdate): UIO[PaymentData] =
@@ -33,20 +33,22 @@ package object db {
                 _ <- Database
                   .updateAmount(amountUpdate.id, amountUpdate.amount)
                   .run
-                  .transact(transactor)
+                  .transact(transactor.get)
                   .orDie
-                result <- Database.select(amountUpdate.id).unique.transact(transactor).orDie
+                result <- Database.select(amountUpdate.id).unique.transact(transactor.get).orDie
 
               } yield result
           }
       )
   }
 
-  def create(payment: Payment): URIO[PaymentRepository, PaymentData] =
-    ZIO.accessM(_.get.create(payment))
+  object DB {
+    def create(payment: Payment): URIO[PaymentRepository, PaymentData] =
+      ZIO.accessM(_.get.create(payment))
 
-  def update(amountUpdate: AmountUpdate): URIO[PaymentRepository, PaymentData] =
-    ZIO.accessM(_.get.update(amountUpdate))
+    def update(amountUpdate: AmountUpdate): URIO[PaymentRepository, PaymentData] =
+      ZIO.accessM(_.get.update(amountUpdate))
+  }
 }
 
 object Database {

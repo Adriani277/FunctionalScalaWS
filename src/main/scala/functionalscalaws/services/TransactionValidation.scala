@@ -1,8 +1,7 @@
 package functionalscalaws.services
 
 import functionalscalaws.domain._
-import zio.IO
-import zio.ZIO
+import zio._
 
 object TransactionValidation {
   trait Service {
@@ -10,10 +9,10 @@ object TransactionValidation {
   }
 
   object Service {
-    val live = new Service {
+    val live = ZLayer.fromEffect(UIO(new Service {
       def validate(sender: Name, recipient: Recipient): IO[InvalidTransactionError.type, Unit] =
         ZIO.when(sender.value == recipient.value)(ZIO.fail(InvalidTransactionError))
-    }
+    }))
   }
 
   def validate(

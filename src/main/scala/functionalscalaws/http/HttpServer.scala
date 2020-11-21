@@ -13,16 +13,17 @@ import zio.interop.catz.implicits._
 
 object HttpServer {
   val make = for {
-    config <- getConfig[Config]
-    service = HelloRoutes.helloWorldService
-    blaze <- Task.concurrentEffect.flatMap { implicit CE =>
-      service.map { route =>
-        BlazeServerBuilder[Task]
-          .bindHttp(config.http.port, config.http.uri)
-          .withHttpApp(Router("/" -> route).orNotFound)
-          .resource
-          .toManagedZIO
-      }
+    config   <- getConfig[Config]
+    service  <- HelloRoutes.helloWorldService
+    payments <- PaymentsEndpoint.service
+    blaze <- Task.concurrentEffect.map { implicit CE =>
+      import cats.implicits._
+
+      BlazeServerBuilder[Task]
+        .bindHttp(config.http.port, config.http.uri)
+        .withHttpApp(Router("/" -> (service <+> payments)).orNotFound)
+        .resource
+        .toManagedZIO
     }
   } yield blaze
 }

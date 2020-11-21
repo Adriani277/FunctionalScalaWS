@@ -32,6 +32,7 @@ libraryDependencies ++= Seq(
   "ch.qos.logback"    % "logback-classic"      % "1.2.3",
   "org.http4s"        %% "http4s-circe"        % http4sVersion,
   "io.circe"          %% "circe-generic"       % "0.12.3",
+  "mysql"             % "mysql-connector-java" % "8.0.17",
   //Test
   "dev.zio" %% "zio-test"     % "1.0.3" % "test",
   "dev.zio" %% "zio-test-sbt" % "1.0.3" % "test"

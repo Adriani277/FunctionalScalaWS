@@ -1,8 +1,7 @@
 package functionalscalaws.services
 
 import functionalscalaws.domain._
-import zio.ZIO
-import zio.IO
+import zio._
 
 object AmountValidation {
   trait Service {
@@ -10,13 +9,13 @@ object AmountValidation {
   }
 
   object Service {
-    val live: Service = new Service {
+    val live = ZLayer.fromEffect(UIO(new Service {
       def validate(amount: Amount): IO[InvalidAmountError, Unit] =
         if (amount.value <= 0 || amount.value > 1000000)
           IO.fail(InvalidAmountError(amount))
         else
           IO.unit
-    }
+    }))
   }
 
   def validate(amount: Amount): ZIO[AmountValidation, InvalidAmountError, Unit] =
