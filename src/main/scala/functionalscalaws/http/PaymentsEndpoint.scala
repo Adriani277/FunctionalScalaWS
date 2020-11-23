@@ -12,7 +12,7 @@ import org.http4s.circe._
 import io.circe.syntax._
 
 object PaymentsEndpoint extends Http4sDsl[Task] {
-  val service = URIO.access[PaymentCreationP](
+  val service = URIO.access[PaymentCreationP with PaymentUpdateP](
     prog =>
       HttpRoutes.of[Task] {
         case GET -> Root / "status" =>
@@ -26,6 +26,19 @@ object PaymentsEndpoint extends Http4sDsl[Task] {
             response <- result match {
               case Left(e)  => UnprocessableEntity(ErrorResponse.fromServiceError(e).asJson)
               case Right(v) => Created(PaymentDataView.fromPaymentData(v).asJson)
+            }
+          } yield response
+
+          result.provide(prog)
+
+        case r @ PUT -> Root / "payment" / "update" =>
+          implicit val ed = jsonOf[Task, AmountUpdateView]
+          val result = for {
+            view   <- r.as[AmountUpdateView]
+            result <- PaymentUpdateP.update(AmountUpdateView.toAmountUpdate(view)).either
+            response <- result match {
+              case Left(e)  => UnprocessableEntity(ErrorResponse.fromServiceError(e).asJson)
+              case Right(v) => Ok(PaymentDataView.fromPaymentData(v).asJson)
             }
           } yield response
 

@@ -18,16 +18,18 @@ object Layers {
     with Persistence[User]
     with UserProgram
     with PaymentCreationP
+    with PaymentUpdateP
 
   object live {
     private val rootLayer        = Clock.live ++ zio.console.Console.live
     private val logLayer         = rootLayer >+> consoleLogger
     private val persistenceLayer = logLayer >+> inMemory(Vector.empty)
     private val programLayer     = persistenceLayer >+> Service.live
-    
-    private val transactor       = (doobieConfig ++ blocking.Blocking.live) >>> HTransactor.buildTransactor
-    private val repo         = transactor >>> db.Service.paymentDataLive
-    private val paymentLayer = (repo ++ AmountValidation.Service.live ++ TransactionValidation.Service.live) >>> PaymentCreationP.Service.live
+
+    private val transactor = (doobieConfig ++ blocking.Blocking.live) >>> HTransactor.buildTransactor
+    private val repo       = transactor >>> db.Service.paymentDataLive
+    private val paymentLayer =
+      (repo ++ AmountValidation.Service.live ++ TransactionValidation.Service.live) >>> PaymentCreationP.Service.live ++ PaymentUpdateP.Service.live
 
     val appLayer: ZLayer[Any, Throwable, AppEnv] = liveConfig ++ programLayer ++ paymentLayer
   }
