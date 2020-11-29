@@ -18,12 +18,14 @@ object PaymentUpdateP {
         def update(updateAmount: AmountUpdate): zio.IO[ServiceError, PaymentData] =
           (for {
             _      <- AmountValidation.validate(updateAmount.amount)
-            result <- update(updateAmount)
+            result <- DB.update(updateAmount)
           } yield result).provide(services)
       }
     }
   }
 
-  def update(updateAmount: AmountUpdate) =
+  def update(
+      updateAmount: AmountUpdate
+  ): ZIO[PaymentUpdateP, ServiceError, PaymentData] =
     ZIO.accessM[PaymentUpdateP](_.get update updateAmount)
 }
