@@ -6,7 +6,7 @@ import zio.logging._
 
 object Main extends zio.App {
   def run(args: List[String]): zio.URIO[zio.ZEnv, ExitCode] =
-    program.provideSomeLayer[zio.ZEnv](Layers.live.appLayer).exitCode
+    program.provideCustomLayer(Layers.live.appLayer).exitCode
 
   private val program: ZIO[Layers.AppEnv, Throwable, Unit] =
     for {
