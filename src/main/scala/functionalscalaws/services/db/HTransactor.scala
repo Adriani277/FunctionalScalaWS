@@ -6,12 +6,12 @@ import zio._
 import functionalscalaws.Config._
 import zio.interop.catz._
 import functionalscalaws.Config.DoobieConfig
-import doobie.util.transactor.Transactor
+import javax.sql.DataSource
 
 object HTransactor {
 
   val buildTransactor = ZLayer
-    .fromManaged[zio.blocking.Blocking with Has[DoobieConfig], Nothing, Transactor[Task]] {
+    .fromManaged[zio.blocking.Blocking with Has[DoobieConfig], Nothing, DataSource] {
       val deps = for {
         ec      <- ZIO.descriptor.map(_.executor.asEC)
         blocker <- zio.blocking.blocking { ZIO.descriptor.map(_.executor.asEC) }
@@ -30,22 +30,7 @@ object HTransactor {
               blocker
             )
             .toManagedZIO
+            .map(_.kernel.getDataSource())
       }.orDie
     }
-//   object Service {
-//     def buildTransactor(
-//         config: DoobieConfig,
-//         ec: ExecutionContext,
-//         blocker: Blocker
-//     )(implicit cs: ContextShift[Task]): ZManaged[Any, Nothing, HikariTransactor[Task]] =
-//       HikariTransactor.newHikariTransactor[Task](
-//         config.driver,
-//         config.url,
-//         config.user,
-//         config.password,
-//         ec,
-//         blocker
-//       )
-//   }
-
 }
