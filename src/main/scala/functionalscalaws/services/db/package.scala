@@ -17,26 +17,25 @@ package object db {
   }
 
   object Service {
-    val paymentDataLive
-        : ZLayer[io.github.gaelrenoux.tranzactio.doobie.Database, Nothing, PaymentRepository] =
+    val paymentDataLive: ZLayer[Database, Nothing, PaymentRepository] =
       ZLayer.fromFunction(
         db =>
           new Service[PaymentData] {
             def create(payment: Payment): UIO[PaymentData] =
-              io.github.gaelrenoux.tranzactio.doobie.Database
+              Database
                 .transactionOrDie(for {
                   id     <- UIO(UUID.randomUUID())
-                  _      <- Database.insert(id, payment)
-                  result <- Database.select(id)
+                  _      <- Repo.insert(id, payment)
+                  result <- Repo.select(id)
                 } yield result)
                 .provide(db)
                 .orDie
 
             def update(amountUpdate: AmountUpdate): UIO[PaymentData] =
-              io.github.gaelrenoux.tranzactio.doobie.Database
+              Database
                 .transactionOrDie(for {
-                  _      <- Database.updateAmount(amountUpdate.id, amountUpdate.amount)
-                  result <- Database.select(amountUpdate.id)
+                  _      <- Repo.updateAmount(amountUpdate.id, amountUpdate.amount)
+                  result <- Repo.select(amountUpdate.id)
 
                 } yield result)
                 .provide(db)
@@ -54,7 +53,7 @@ package object db {
   }
 }
 
-object Database {
+object Repo {
 
   /**
     * Needed in order to read/write a UUID to the database
