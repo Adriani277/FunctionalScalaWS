@@ -1,10 +1,9 @@
 package functionalscalaws.services
 
-import zio.test.DefaultRunnableSpec
-
-import zio.test._
-import zio.test.Assertion._
 import functionalscalaws.domain._
+import zio.test.Assertion._
+import zio.test.DefaultRunnableSpec
+import zio.test._
 
 object TransactionValidationSpec extends DefaultRunnableSpec {
   def spec =

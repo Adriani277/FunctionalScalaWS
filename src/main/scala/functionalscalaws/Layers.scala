@@ -6,10 +6,11 @@ import functionalscalaws.logging._
 import functionalscalaws.persistence._
 import functionalscalaws.program._
 import functionalscalaws.services._
+import functionalscalaws.services.db.HTransactor
 import zio._
+import zio.clock.Clock
 import zio.config.ZConfig
 import zio.logging.Logging
-import functionalscalaws.services.db.HTransactor
 
 object Layers {
   type AppEnv = Logging
@@ -18,6 +19,7 @@ object Layers {
     with UserProgram
     with PaymentCreationP
     with PaymentUpdateP
+    with Clock
 
   object live {
     private val programLayer = consoleLogger >+> inMemory(Vector.empty) >+> Service.live
@@ -27,6 +29,6 @@ object Layers {
     private val paymentLayer =
       (repo ++ AmountValidation.Service.live ++ TransactionValidation.Service.live) >>> PaymentCreationP.Service.live ++ PaymentUpdateP.Service.live
 
-    val appLayer: ZLayer[ZEnv, Throwable, AppEnv] = consoleLogger ++ programLayer ++ paymentLayer ++ liveConfig
+    val appLayer: ZLayer[ZEnv, Throwable, AppEnv] = consoleLogger ++ programLayer ++ paymentLayer ++ liveConfig ++ Clock.any
   }
 }

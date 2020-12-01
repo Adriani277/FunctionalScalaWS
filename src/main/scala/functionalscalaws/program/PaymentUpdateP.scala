@@ -2,9 +2,9 @@ package functionalscalaws.program
 
 import functionalscalaws.domain._
 import functionalscalaws.domain.db._
-import zio._
 import functionalscalaws.services.AmountValidation
 import functionalscalaws.services.db._
+import zio._
 
 object PaymentUpdateP {
 

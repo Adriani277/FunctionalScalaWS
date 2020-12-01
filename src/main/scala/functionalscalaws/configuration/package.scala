@@ -1,11 +1,11 @@
 package functionalscalaws
 
+import functionalscalaws.Config.DoobieConfig
 import zio._
 import zio.config._
 import zio.config.magnolia.DeriveConfigDescriptor.descriptor
-import zio.config.typesafe._
-import functionalscalaws.Config.DoobieConfig
 import zio.config.syntax._
+import zio.config.typesafe._
 
 final case class Config(http: Config.HttpConfig, doobie: DoobieConfig)
 object Config {

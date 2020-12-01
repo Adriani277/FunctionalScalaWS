@@ -1,9 +1,9 @@
 package functionalscalaws.services
 
-import zio.test._
+import functionalscalaws.domain._
 import zio.test.Assertion._
 import zio.test.DefaultRunnableSpec
-import functionalscalaws.domain._
+import zio.test._
 
 object AmountValidationSpec extends DefaultRunnableSpec {
   def spec =

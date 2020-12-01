@@ -2,9 +2,9 @@ package functionalscalaws.http.views
 
 import java.util.UUID
 
-import io.circe.generic.semiauto._
 import functionalscalaws.domain.db.PaymentData
 import io.circe.Codec
+import io.circe.generic.semiauto._
 
 final case class PaymentDataView(
     id: UUID,

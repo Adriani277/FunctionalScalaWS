@@ -1,12 +1,13 @@
 package functionalscalaws.services
 
-import functionalscalaws.domain._
-import functionalscalaws.domain.db._
-import zio._
 import java.util.UUID
+
 import doobie._
 import doobie.implicits._
+import functionalscalaws.domain._
+import functionalscalaws.domain.db._
 import io.github.gaelrenoux.tranzactio.doobie._
+import zio._
 
 package object db {
   type PaymentRepository = Has[Service[PaymentData]]

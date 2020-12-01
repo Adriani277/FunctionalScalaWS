@@ -2,9 +2,9 @@ package functionalscalaws.program
 
 import functionalscalaws.domain._
 import functionalscalaws.domain.db.PaymentData
-import zio._
 import functionalscalaws.services._
 import functionalscalaws.services.db._
+import zio._
 
 object PaymentCreationP {
   trait Service {

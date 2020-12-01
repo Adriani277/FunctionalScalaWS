@@ -1,12 +1,13 @@
 package functionalscalaws.services.db
 
+import javax.sql.DataSource
+
 import cats.effect.Blocker
 import doobie.hikari.HikariTransactor
-import zio._
-import functionalscalaws.Config._
-import zio.interop.catz._
 import functionalscalaws.Config.DoobieConfig
-import javax.sql.DataSource
+import functionalscalaws.Config._
+import zio._
+import zio.interop.catz._
 
 object HTransactor {
 

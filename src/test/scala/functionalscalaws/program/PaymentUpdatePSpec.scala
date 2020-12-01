@@ -1,16 +1,15 @@
 package functionalscalaws.program
 
-import zio.test.DefaultRunnableSpec
-
-import zio.test._
-import zio.test.Assertion._
 import functionalscalaws.domain._
 import functionalscalaws.domain.db.PaymentData
-import zio.test.mock.Mock
 import functionalscalaws.services.AmountValidation
 import zio.Has
 import zio.ZLayer
+import zio.test.Assertion._
+import zio.test.DefaultRunnableSpec
+import zio.test._
 import zio.test.mock.Expectation._
+import zio.test.mock.Mock
 
 object PaymentUpdatePSpec extends DefaultRunnableSpec {
   def spec = suite("update")(
