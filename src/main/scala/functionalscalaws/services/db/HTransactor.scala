@@ -8,8 +8,29 @@ import functionalscalaws.Config.DoobieConfig
 import functionalscalaws.Config._
 import zio._
 import zio.interop.catz._
+import doobie.util.ExecutionContexts
+import doobie.h2._
+import io.github.gaelrenoux.tranzactio.ConnectionSource
+import zio.clock.Clock
+import zio.blocking.Blocking
 
 object HTransactor {
+
+  val h2ConnectionSource = {
+    val trans = (for {
+      ce <- ExecutionContexts.fixedThreadPool[Task](32) // our connect EC
+      be <- Blocker[Task]                               // our blocking EC
+      xa <- H2Transactor.newH2Transactor[Task](
+        "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", // connect URL
+        "user",                               // username
+        "",                                   // password
+        ce,                                   // await connection here
+        be                                    // execute JDBC operations here
+      )
+    } yield xa).toManagedZIO.map(_.kernel.getConnection())
+
+    ZLayer.fromManaged(trans) ++ Clock.any ++ Blocking.any >>> ConnectionSource.fromConnection
+  }
 
   val buildTransactor = ZLayer
     .fromManaged[zio.blocking.Blocking with Has[DoobieConfig], Nothing, DataSource] {

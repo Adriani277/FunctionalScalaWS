@@ -9,8 +9,9 @@ import org.http4s.dsl.Http4sDsl
 import zio.RIO
 import zio.interop.catz._
 import zio.interop.catz._
+import functionalscalaws.services.db._
 
-final class PaymentsEndpoint[R <: PaymentCreationP with PaymentUpdateP] {
+final class PaymentsEndpoint[R <: PaymentCreationP with PaymentUpdateP with PaymentRepository] {
   type PaymentsTask[A] = RIO[R, A]
 
   private val dsl = Http4sDsl[PaymentsTask]
@@ -42,5 +43,11 @@ final class PaymentsEndpoint[R <: PaymentCreationP with PaymentUpdateP] {
             case Right(v) => Ok(PaymentDataView.fromPaymentData(v).asJson)
           }
         } yield response
+
+      case GET -> Root / "payments" =>
+        for {
+          payments <- DB.selectAll
+          result   <- Ok(payments.map(PaymentDataView.fromPaymentData).asJson)
+        } yield result
     }
 }

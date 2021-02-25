@@ -15,6 +15,8 @@ package object db {
   trait Service[A] {
     def create(payment: Payment): UIO[A]
     def update(amount: AmountUpdate): UIO[A]
+    def selectAll: UIO[List[A]]
+    def createTable: UIO[Unit]
   }
 
   object Service {
@@ -27,7 +29,7 @@ package object db {
                 .transactionOrDie(for {
                   id     <- UIO(UUID.randomUUID())
                   _      <- Repo.insert(id, payment)
-                  result <- Repo.select(id)
+                  result <- Repo.selectById(id)
                 } yield result)
                 .provide(db)
                 .orDie
@@ -36,11 +38,17 @@ package object db {
               Database
                 .transactionOrDie(for {
                   _      <- Repo.updateAmount(amountUpdate.id, amountUpdate.amount)
-                  result <- Repo.select(amountUpdate.id)
+                  result <- Repo.selectById(amountUpdate.id)
 
                 } yield result)
                 .provide(db)
                 .orDie
+
+            def selectAll: zio.UIO[List[PaymentData]] =
+              Database.transactionOrDie(Repo.selectAll).provide(db).orDie
+
+            def createTable: zio.UIO[Unit] =
+              Database.transactionOrDie(Repo.createTable).provide(db)
           }
       )
   }
@@ -51,6 +59,12 @@ package object db {
 
     def update(amountUpdate: AmountUpdate): URIO[PaymentRepository, PaymentData] =
       ZIO.accessM(_.get.update(amountUpdate))
+
+    val selectAll: URIO[PaymentRepository, List[PaymentData]] =
+      ZIO.accessM(_.get.selectAll)
+
+    val createTable: URIO[PaymentRepository, Unit] =
+      ZIO.accessM(_.get.createTable)
   }
 }
 
@@ -64,16 +78,32 @@ object Repo {
   implicit val uuidMeta: Meta[UUID] = Meta[String].timap(UUID.fromString)(_.toString)
 
   def insert(id: UUID, payment: Payment) = tzio {
-    sql"insert payments (id, name, amount, recipient) values (${id.toString}, ${payment.name.value}, ${payment.amount.value}, ${payment.recipient.value})".update.run
+    sql"insert into payments (id, name, amount, recipient) values (${id.toString}, ${payment.name.value}, ${payment.amount.value}, ${payment.recipient.value})".update.run
   }
 
   def updateAmount(id: UUID, amount: Amount) =
     tzio(sql"update payments set amount = ${amount.value} where id = ${id.toString()}".update.run)
 
-  def select(id: UUID) =
+  def selectById(id: UUID) =
     tzio(
       sql"select id, name, amount, recipient from payments where id = ${id.toString}"
         .query[PaymentData]
         .unique
     )
+
+  val selectAll =
+    tzio(
+      sql"select id, name, amount, recipient from payments"
+        .query[PaymentData]
+        .to[List]
+    )
+
+  val createTable = tzio {
+    sql"""CREATE TABLE payments (
+                id VARCHAR(36),
+                name VARCHAR(255),
+                amount DECIMAL(12, 2),
+                recipient VARCHAR(255)
+              ) """.update.run
+  }.orDie.unit
 }

@@ -24,6 +24,7 @@ libraryDependencies ++= Seq(
   "dev.zio"              %% "zio-interop-cats"    % "2.2.0.1",
   "dev.zio"              %% "zio-config-magnolia" % "1.0.0-RC29",
   "dev.zio"              %% "zio-config-typesafe" % "1.0.0-RC29",
+  "org.tpolecat"         %% "doobie-h2"           % "0.9.0",
   "org.tpolecat"         %% "doobie-core"         % "0.8.8",
   "org.tpolecat"         %% "doobie-hikari"       % "0.8.8",
   "dev.zio"              %% "zio-logging-slf4j"   % "0.5.3",

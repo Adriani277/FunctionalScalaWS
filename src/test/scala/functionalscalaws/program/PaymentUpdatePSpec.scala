@@ -60,6 +60,8 @@ object RepoMock extends Mock[functionalscalaws.services.db.PaymentRepository] {
   val compose: zio.URLayer[Has[zio.test.mock.Proxy], PaymentRepository] = ZLayer.fromService(
     invoke =>
       new Service[PaymentData] {
+        def createTable: zio.UIO[Unit] = ???
+        def selectAll: zio.UIO[List[PaymentData]] = ???
         def create(payment: Payment): zio.UIO[PaymentData]     = invoke(Create, payment)
         def update(amount: AmountUpdate): zio.UIO[PaymentData] = invoke(Update, amount)
       }

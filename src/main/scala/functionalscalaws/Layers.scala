@@ -20,15 +20,19 @@ object Layers {
     with PaymentCreationP
     with PaymentUpdateP
     with Clock
+    with PreStartupP
+    with db.PaymentRepository
 
   object live {
     private val programLayer = consoleLogger >+> inMemory(Vector.empty) >+> Service.live
 
-    private val database = (doobieConfig ++ blocking.Blocking.live ++ clock.Clock.live) >+> HTransactor.buildTransactor >>> io.github.gaelrenoux.tranzactio.doobie.Database.fromDatasource
-    private val repo       = database >>> db.Service.paymentDataLive
+    private val database = blocking.Blocking.live ++ clock.Clock.live >+> HTransactor.h2ConnectionSource >>> io.github.gaelrenoux.tranzactio.doobie.Database.fromConnectionSource
+    // private val database = (doobieConfig ++ blocking.Blocking.live ++ clock.Clock.live) >+> HTransactor.buildTransactor >>> io.github.gaelrenoux.tranzactio.doobie.Database.fromDatasource
+    private val repo = database >>> db.Service.paymentDataLive
     private val paymentLayer =
-      (repo ++ AmountValidation.Service.live ++ TransactionValidation.Service.live) >>> PaymentCreationP.Service.live ++ PaymentUpdateP.Service.live
+      (repo ++ AmountValidation.Service.live ++ TransactionValidation.Service.live) >>> PaymentCreationP.Service.live ++ PaymentUpdateP.Service.live ++ PreStartupProgram.Service.live
 
-    val appLayer: ZLayer[ZEnv, Throwable, AppEnv] = consoleLogger ++ programLayer ++ paymentLayer ++ liveConfig ++ Clock.any
+    val appLayer
+        : ZLayer[ZEnv, Throwable, AppEnv] = consoleLogger ++ programLayer ++ paymentLayer ++ liveConfig ++ Clock.any ++ repo
   }
 }
