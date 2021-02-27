@@ -1,9 +1,7 @@
 package functionalscalaws
 
-import functionalscalaws.UserProgram._
 import functionalscalaws.configuration._
 import functionalscalaws.logging._
-import functionalscalaws.persistence._
 import functionalscalaws.program._
 import functionalscalaws.services._
 import functionalscalaws.services.db.HTransactor
@@ -15,8 +13,8 @@ import zio.logging.Logging
 object Layers {
   type AppEnv = Logging
     with ZConfig[Config]
-    with Persistence[User]
-    with UserProgram
+    // with Persistence[User]
+    // with UserProgram
     with PaymentCreationP
     with PaymentUpdateP
     with Clock
@@ -24,7 +22,7 @@ object Layers {
     with db.PaymentRepository
 
   object live {
-    private val programLayer = consoleLogger >+> inMemory(Vector.empty) >+> Service.live
+    private val programLayer = consoleLogger //>+> inMemory(Vector.empty) >+> Service.live
 
     private val database = blocking.Blocking.live ++ clock.Clock.live >+> HTransactor.h2ConnectionSource >>> io.github.gaelrenoux.tranzactio.doobie.Database.fromConnectionSource
     // private val database = (doobieConfig ++ blocking.Blocking.live ++ clock.Clock.live) >+> HTransactor.buildTransactor >>> io.github.gaelrenoux.tranzactio.doobie.Database.fromDatasource

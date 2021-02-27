@@ -6,6 +6,7 @@ import zio._
 import zio.clock.Clock
 import zio.logging._
 
+// NOTE: Not used
 package object persistence {
   final case class User(id: Int, v: String)
   object User {
