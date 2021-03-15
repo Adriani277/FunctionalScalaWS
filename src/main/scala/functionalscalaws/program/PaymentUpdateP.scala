@@ -13,15 +13,16 @@ object PaymentUpdateP {
   }
 
   object Service {
-    def live = ZLayer.fromFunction { (services: AmountValidation with PaymentRepository) =>
-      new Service {
-        def update(updateAmount: AmountUpdate): zio.IO[ServiceError, PaymentData] =
-          (for {
-            _      <- AmountValidation.validate(updateAmount.amount)
-            result <- DB.update(updateAmount)
-          } yield result).provide(services)
+    def live: ZLayer[AmountValidation with PaymentRepository, Nothing, PaymentUpdateP] =
+      ZLayer.fromFunction { (services: AmountValidation with PaymentRepository) =>
+        new Service {
+          def update(updateAmount: AmountUpdate): zio.IO[ServiceError, PaymentData] =
+            (for {
+              _      <- AmountValidation.validate(updateAmount.amount)
+              result <- DB.update(updateAmount)
+            } yield result).provide(services)
+        }
       }
-    }
   }
 
   def update(

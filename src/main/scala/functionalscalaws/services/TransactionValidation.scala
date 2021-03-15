@@ -9,7 +9,7 @@ object TransactionValidation {
   }
 
   object Service {
-    val live = ZLayer.fromEffect(UIO(new Service {
+    val live: ZLayer[Any, Nothing, TransactionValidation] = ZLayer.fromEffect(UIO(new Service {
       def validate(sender: Name, recipient: Recipient): IO[InvalidTransactionError.type, Unit] =
         ZIO.when(sender.value == recipient.value)(ZIO.fail(InvalidTransactionError))
     }))

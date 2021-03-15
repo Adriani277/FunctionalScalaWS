@@ -2,14 +2,13 @@ package functionalscalaws.http
 
 import functionalscalaws.http.views._
 import functionalscalaws.program._
+import functionalscalaws.services.db._
 import io.circe.syntax._
 import org.http4s.HttpRoutes
 import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
 import zio.RIO
 import zio.interop.catz._
-import zio.interop.catz._
-import functionalscalaws.services.db._
 
 final class PaymentsEndpoint[R <: PaymentCreationP with PaymentUpdateP with PaymentRepository] {
   type PaymentsTask[A] = RIO[R, A]

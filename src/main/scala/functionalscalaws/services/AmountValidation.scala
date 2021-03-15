@@ -9,7 +9,7 @@ object AmountValidation {
   }
 
   object Service {
-    val live = ZLayer.fromEffect(UIO(new Service {
+    val live: ZLayer[Any,Nothing, AmountValidation] = ZLayer.fromEffect(UIO(new Service {
       def validate(amount: Amount): IO[InvalidAmountError, Unit] =
         if (amount.value <= 0 || amount.value > 1000000)
           IO.fail(InvalidAmountError(amount))

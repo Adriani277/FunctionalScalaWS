@@ -9,6 +9,7 @@ import zio._
 import zio.clock.Clock
 import zio.config.ZConfig
 import zio.logging.Logging
+import zio.magic._
 
 object Layers {
   type AppEnv = Logging
@@ -18,19 +19,25 @@ object Layers {
     with PaymentCreationP
     with PaymentUpdateP
     with Clock
-    with PreStartupP
+    with Has[PreStartupProgram]
     with db.PaymentRepository
 
   object live {
-    private val programLayer = consoleLogger //>+> inMemory(Vector.empty) >+> Service.live
-
-    private val database = blocking.Blocking.live ++ clock.Clock.live >+> HTransactor.h2ConnectionSource >>> io.github.gaelrenoux.tranzactio.doobie.Database.fromConnectionSource
-    // private val database = (doobieConfig ++ blocking.Blocking.live ++ clock.Clock.live) >+> HTransactor.buildTransactor >>> io.github.gaelrenoux.tranzactio.doobie.Database.fromDatasource
-    private val repo = database >>> db.Service.paymentDataLive
-    private val paymentLayer =
-      (repo ++ AmountValidation.Service.live ++ TransactionValidation.Service.live) >>> PaymentCreationP.Service.live ++ PaymentUpdateP.Service.live ++ PreStartupProgram.Service.live
-
-    val appLayer
-        : ZLayer[ZEnv, Throwable, AppEnv] = consoleLogger ++ programLayer ++ paymentLayer ++ liveConfig ++ Clock.any ++ repo
+    //For database access comment lines 31/32 and uncomment 28/30
+    val appLayer = ZLayer.fromSomeMagic[ZEnv, AppEnv](
+      // io.github.gaelrenoux.tranzactio.doobie.Database.fromDatasource,
+      // HTransactor.buildTransactor,
+      // doobieConfig,
+      io.github.gaelrenoux.tranzactio.doobie.Database.fromConnectionSource,
+      HTransactor.h2ConnectionSource,
+      db.Service.paymentDataLive,
+      AmountValidation.Service.live,
+      TransactionValidation.Service.live,
+      PaymentCreationP.Service.live,
+      PreStartupProgram.live,
+      PaymentUpdateP.Service.live,
+      liveConfig,
+      consoleLogger,
+    ) 
   }
 }

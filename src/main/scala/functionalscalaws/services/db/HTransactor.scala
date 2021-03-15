@@ -3,16 +3,15 @@ package functionalscalaws.services.db
 import javax.sql.DataSource
 
 import cats.effect.Blocker
-import doobie.hikari.HikariTransactor
-import functionalscalaws.Config.DoobieConfig
-import functionalscalaws.Config._
-import zio._
-import zio.interop.catz._
-import doobie.util.ExecutionContexts
 import doobie.h2._
+import doobie.hikari.HikariTransactor
+import doobie.util.ExecutionContexts
+import functionalscalaws.Config.DoobieConfig
 import io.github.gaelrenoux.tranzactio.ConnectionSource
-import zio.clock.Clock
+import zio._
 import zio.blocking.Blocking
+import zio.clock.Clock
+import zio.interop.catz._
 
 object HTransactor {
 

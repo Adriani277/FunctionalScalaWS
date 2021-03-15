@@ -1,9 +1,11 @@
 import Dependencies._
 
-ThisBuild / scalaVersion := "2.13.1"
+ThisBuild / scalaVersion := "2.13.3"
 ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / organization := "com.functionalscalaws"
 ThisBuild / organizationName := "functionalscalaws"
+ThisBuild / semanticdbEnabled := true
+ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 
 lazy val root = (project in file("."))
   .settings(
@@ -13,15 +15,17 @@ lazy val root = (project in file("."))
 
 val http4sVersion     = "0.21.2"
 val pureConfigVersion = "0.12.3"
+val zioVersion = "1.0.5"
 
 ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.4.3"
 
 coverageExcludedPackages := "functionalscalaws.Main; functionalscalaws.http.HttpServer; functionalscalaws.Layers"
 
 libraryDependencies ++= Seq(
-  "dev.zio"              %% "zio"                 % "1.0.3",
-  "io.github.gaelrenoux" %% "tranzactio"          % "1.1.0",
-  "dev.zio"              %% "zio-interop-cats"    % "2.2.0.1",
+  "dev.zio"              %% "zio"                 % zioVersion,
+  "io.github.gaelrenoux" %% "tranzactio"          % "1.2.0",
+  "dev.zio"              %% "zio-interop-cats"    % "2.3.1.0",
+  "io.github.kitlangton" %% "zio-magic"           % "0.1.12",
   "dev.zio"              %% "zio-config-magnolia" % "1.0.0-RC29",
   "dev.zio"              %% "zio-config-typesafe" % "1.0.0-RC29",
   "org.tpolecat"         %% "doobie-h2"           % "0.9.0",
@@ -36,8 +40,8 @@ libraryDependencies ++= Seq(
   "io.circe"             %% "circe-generic"       % "0.12.3",
   "mysql"                % "mysql-connector-java" % "8.0.17",
   //Test
-  "dev.zio" %% "zio-test"     % "1.0.3" % "test",
-  "dev.zio" %% "zio-test-sbt" % "1.0.3" % "test"
+  "dev.zio" %% "zio-test"     % zioVersion % "test",
+  "dev.zio" %% "zio-test-sbt" % zioVersion % "test"
 )
 
 testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework"))
@@ -53,6 +57,6 @@ scalacOptions ++= Seq(
   "-Wunused:explicits",
   "-Wunused:params",
   "-Xlint:unused",
-  "-Wunused:imports",
+  "-Wconf:cat=unused:info",
   "-Ymacro-annotations"
 )

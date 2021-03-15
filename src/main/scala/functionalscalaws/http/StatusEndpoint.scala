@@ -1,7 +1,6 @@
 package functionalscalaws.http
 
 import org.http4s.HttpRoutes
-import org.http4s._
 import org.http4s.dsl.Http4sDsl
 import zio._
 import zio.interop.catz._

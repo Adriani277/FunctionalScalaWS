@@ -9,7 +9,6 @@ import org.http4s.Response
 import org.http4s.implicits._
 import org.http4s.server.Router
 import org.http4s.server.blaze.BlazeServerBuilder
-import org.http4s.server.blaze._
 import zio._
 import zio.config._
 import zio.interop.catz._

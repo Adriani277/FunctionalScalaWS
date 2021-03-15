@@ -1,27 +1,23 @@
 package functionalscalaws.program
 
-import functionalscalaws.services._
-
-import zio.UIO
-import zio.ZLayer
 import functionalscalaws.domain.db.PaymentData
-import zio.URIO
-import zio.ZIO
+import functionalscalaws.services._
+import functionalscalaws.services.db.Service
+import zio._
+
+trait PreStartupProgram {
+  def createTable: UIO[Unit]
+}
 
 object PreStartupProgram {
-  trait Service {
-    def createTable: UIO[Unit]
-  }
+  val live: ZLayer[Has[Service[PaymentData]],Nothing,Has[PreStartupProgram]] = (for {
+    db <- ZIO.service[db.Service[PaymentData]]
+  } yield new Program(db)).toLayer
 
-  object Service {
-    val live = ZLayer.fromService[db.Service[PaymentData], Service](
-      db =>
-        new Service {
-          def createTable: zio.UIO[Unit] = db.createTable
-        }
-    )
-  }
-
-  val createTable: URIO[PreStartupP, Unit] =
+  val createTable: URIO[Has[PreStartupProgram], Unit] =
     ZIO.accessM(_.get.createTable)
+
+  final class Program(database: db.Service[PaymentData]) extends PreStartupProgram {
+    def createTable: zio.UIO[Unit] = database.createTable
+  }
 }
