@@ -9,7 +9,7 @@ import functionalscalaws.domain.db._
 import io.github.gaelrenoux.tranzactio.doobie._
 import zio._
 
-final class PaymentRepo(db: Database.Service) extends Repository[PaymentData] {
+final class PaymentRepo(db: Database.Service) extends RepositoryAlg[PaymentData] {
   def create(payment: Payment): UIO[PaymentData] =
     db.transactionOrDie(for {
         id     <- UIO(UUID.randomUUID())

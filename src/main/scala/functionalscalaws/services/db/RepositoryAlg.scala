@@ -4,14 +4,14 @@ import functionalscalaws.domain.db._
 import io.github.gaelrenoux.tranzactio.doobie._
 import zio._
 
-trait Repository[A] {
+trait RepositoryAlg[A] {
   def create(payment: Payment): UIO[A]
   def update(amount: AmountUpdate): UIO[A]
   def selectAll: UIO[List[A]]
   def createTable: UIO[Unit]
 }
-object Repository {
-  type PaymentRepository = Repository[PaymentData]
+object RepositoryAlg {
+  type PaymentRepository = RepositoryAlg[PaymentData]
 
   val paymentRepoLive: ZLayer[Database, Nothing, Has[PaymentRepository]] =
     (for {

@@ -1,5 +1,5 @@
 package functionalscalaws.program
-import functionalscalaws.services.db.Repository.PaymentRepository
+import functionalscalaws.services.db.RepositoryAlg.PaymentRepository
 import zio._
 
 trait PreStartupProgram {

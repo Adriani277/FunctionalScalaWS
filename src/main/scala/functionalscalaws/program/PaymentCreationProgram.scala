@@ -3,7 +3,7 @@ package functionalscalaws.program
 import functionalscalaws.domain._
 import functionalscalaws.domain.db.PaymentData
 import functionalscalaws.services._
-import functionalscalaws.services.db.Repository._
+import functionalscalaws.services.db.RepositoryAlg._
 import zio._
 
 trait PaymentCreation {

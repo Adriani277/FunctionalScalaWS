@@ -5,7 +5,7 @@ import functionalscalaws.logging._
 import functionalscalaws.program._
 import functionalscalaws.services._
 import functionalscalaws.services.db.HTransactor
-import functionalscalaws.services.db.Repository
+import functionalscalaws.services.db.RepositoryAlg
 import zio._
 import zio.clock.Clock
 import zio.config.ZConfig
@@ -18,10 +18,10 @@ object Layers {
     // with Persistence[User]
     // with UserProgram
     with Has[PaymentCreation]
-    with PaymentUpdateP
+    with Has[PaymentUpdateProgram]
     with Clock
     with Has[PreStartupProgram]
-    with Has[Repository.PaymentRepository]
+    with Has[RepositoryAlg.PaymentRepository]
 
   object live {
     //For database access comment lines 31/32 and uncomment 28/30
@@ -31,12 +31,12 @@ object Layers {
       // doobieConfig,
       io.github.gaelrenoux.tranzactio.doobie.Database.fromConnectionSource,
       HTransactor.h2ConnectionSource,
-      Repository.paymentRepoLive,
+      RepositoryAlg.paymentRepoLive,
       AmountValidation.live,
       TransactionValidation.live,
       PaymentCreation.live,
       PreStartupProgram.live,
-      PaymentUpdateP.Service.live,
+      PaymentUpdateProgram.live,
       liveConfig,
       consoleLogger
     )
