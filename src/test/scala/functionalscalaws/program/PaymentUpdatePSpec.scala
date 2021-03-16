@@ -3,6 +3,8 @@ package functionalscalaws.program
 import functionalscalaws.domain._
 import functionalscalaws.domain.db.PaymentData
 import functionalscalaws.services.AmountValidation
+import functionalscalaws.services.db.Repository
+import functionalscalaws.services.db.Repository.PaymentRepository
 import zio.Has
 import zio.ZLayer
 import zio.test.Assertion._
@@ -38,28 +40,27 @@ object PaymentUpdatePSpec extends DefaultRunnableSpec {
   )
 }
 
-object AmountMock extends Mock[AmountValidation] {
+object AmountMock extends Mock[Has[AmountValidation]] {
   object Validate extends Effect[Amount, InvalidAmountError, Unit]
 
-  val compose: zio.URLayer[Has[zio.test.mock.Proxy], AmountValidation] =
+  val compose: zio.URLayer[Has[zio.test.mock.Proxy], Has[AmountValidation]] =
     ZLayer.fromService(
       invoke =>
-        new AmountValidation.Service {
+        new AmountValidation {
           def validate(amount: Amount): zio.IO[InvalidAmountError, Unit] =
             invoke(Validate, amount)
         }
     )
 }
 
-object RepoMock extends Mock[functionalscalaws.services.db.PaymentRepository] {
-  import functionalscalaws.services.db._
+object RepoMock extends Mock[Has[PaymentRepository]] {
 
   object Create extends Effect[Payment, Nothing, PaymentData]
   object Update extends Effect[AmountUpdate, Nothing, PaymentData]
 
-  val compose: zio.URLayer[Has[zio.test.mock.Proxy], PaymentRepository] = ZLayer.fromService(
+  val compose: zio.URLayer[Has[zio.test.mock.Proxy], Has[PaymentRepository]] = ZLayer.fromService(
     invoke =>
-      new Service[PaymentData] {
+      new Repository[PaymentData] {
         def createTable: zio.UIO[Unit] = ???
         def selectAll: zio.UIO[List[PaymentData]] = ???
         def create(payment: Payment): zio.UIO[PaymentData]     = invoke(Create, payment)

@@ -28,5 +28,5 @@ object AmountValidationSpec extends DefaultRunnableSpec {
           )
         }
       }
-    ).provideCustomLayer(AmountValidation.Service.live)
+    ).provideCustomLayer(AmountValidation.live)
 }

@@ -2,15 +2,16 @@ package functionalscalaws.http
 
 import functionalscalaws.http.views._
 import functionalscalaws.program._
-import functionalscalaws.services.db._
+import functionalscalaws.services.db.Repository._
 import io.circe.syntax._
 import org.http4s.HttpRoutes
 import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
+import zio.Has
 import zio.RIO
 import zio.interop.catz._
 
-final class PaymentsEndpoint[R <: PaymentCreationP with PaymentUpdateP with PaymentRepository] {
+final class PaymentsEndpoint[R <: Has[PaymentCreation] with PaymentUpdateP with Has[PaymentRepository]] {
   type PaymentsTask[A] = RIO[R, A]
 
   private val dsl = Http4sDsl[PaymentsTask]
@@ -25,7 +26,7 @@ final class PaymentsEndpoint[R <: PaymentCreationP with PaymentUpdateP with Paym
         implicit val ed = jsonOf[PaymentsTask, PaymentView]
         for {
           view   <- r.as[PaymentView]
-          result <- PaymentCreationP.create(PaymentView.toPayment(view)).either
+          result <- PaymentCreation.create(PaymentView.toPayment(view)).either
           response <- result match {
             case Left(e)  => UnprocessableEntity(ErrorResponse.fromServiceError(e).asJson)
             case Right(v) => Created(PaymentDataView.fromPaymentData(v).asJson)
@@ -45,7 +46,7 @@ final class PaymentsEndpoint[R <: PaymentCreationP with PaymentUpdateP with Paym
 
       case GET -> Root / "payments" =>
         for {
-          payments <- DB.selectAll
+          payments <- selectAll
           result   <- Ok(payments.map(PaymentDataView.fromPaymentData).asJson)
         } yield result
     }

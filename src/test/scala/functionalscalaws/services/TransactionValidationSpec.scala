@@ -27,5 +27,5 @@ object TransactionValidationSpec extends DefaultRunnableSpec {
             assertM(TransactionValidation.validate(name, recipient))(isUnit)
         }
       }
-    ).provideCustomLayer(TransactionValidation.Service.live)
+    ).provideCustomLayer(TransactionValidation.live)
 }
