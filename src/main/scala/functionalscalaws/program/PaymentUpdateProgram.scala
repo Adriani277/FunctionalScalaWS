@@ -1,8 +1,8 @@
 package functionalscalaws.program
 
+import functionalscalaws.algebra.AmountValidationAlg
 import functionalscalaws.domain._
 import functionalscalaws.domain.db._
-import functionalscalaws.services.AmountValidation
 import functionalscalaws.services.db.RepositoryAlg
 import zio._
 
@@ -12,11 +12,11 @@ trait PaymentUpdateProgram {
 }
 object PaymentUpdateProgram {
 
-  def live: URLayer[Has[AmountValidation] with Has[RepositoryAlg.PaymentRepository], Has[
+  def live: URLayer[Has[AmountValidationAlg] with Has[RepositoryAlg.PaymentRepository], Has[
     PaymentUpdateProgram
   ]] =
     (for {
-      amountValidation <- ZIO.service[AmountValidation]
+      amountValidation <- ZIO.service[AmountValidationAlg]
       repo             <- ZIO.service[RepositoryAlg.PaymentRepository]
     } yield Interpreter(amountValidation, repo)).toLayer
 
@@ -26,7 +26,7 @@ object PaymentUpdateProgram {
     ZIO.accessM[Has[PaymentUpdateProgram]](_.get update updateAmount)
 
   final case class Interpreter(
-      amountValidation: AmountValidation,
+      amountValidation: AmountValidationAlg,
       repo: RepositoryAlg.PaymentRepository
   ) extends PaymentUpdateProgram {
     def update(updateAmount: AmountUpdate): zio.IO[ServiceError, PaymentData] =

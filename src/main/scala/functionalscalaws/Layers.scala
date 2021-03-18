@@ -1,6 +1,7 @@
 package functionalscalaws
 
 import functionalscalaws.configuration._
+import functionalscalaws.interpreters._
 import functionalscalaws.logging._
 import functionalscalaws.program._
 import functionalscalaws.services._

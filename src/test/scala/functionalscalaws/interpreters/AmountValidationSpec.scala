@@ -1,5 +1,6 @@
-package functionalscalaws.services
+package functionalscalaws.interpreters
 
+import functionalscalaws.algebra.AmountValidationAlg
 import functionalscalaws.domain._
 import zio.test.Assertion._
 import zio.test.DefaultRunnableSpec
@@ -15,7 +16,7 @@ object AmountValidationSpec extends DefaultRunnableSpec {
           Gen.oneOf(v1, v2)
         }
         checkM(gen) { amount =>
-          assertM(AmountValidation.validate(amount).run)(
+          assertM(AmountValidationAlg.validate(amount).run)(
             fails(equalTo(InvalidAmountError(amount)))
           )
         }
@@ -23,7 +24,7 @@ object AmountValidationSpec extends DefaultRunnableSpec {
       testM("returns unit when amount is greater than 0 and < 1,000,000") {
         val gen = Gen.double(Double.MinPositiveValue, 1000000d).map(Amount.apply)
         checkM(gen) { amount =>
-          assertM(AmountValidation.validate(amount))(
+          assertM(AmountValidationAlg.validate(amount))(
             isUnit
           )
         }

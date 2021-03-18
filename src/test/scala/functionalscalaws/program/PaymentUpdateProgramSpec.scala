@@ -1,8 +1,8 @@
 package functionalscalaws.program
 
+import functionalscalaws.algebra.AmountValidationAlg
 import functionalscalaws.domain._
 import functionalscalaws.domain.db.PaymentData
-import functionalscalaws.services.AmountValidation
 import functionalscalaws.services.db.RepositoryAlg
 import functionalscalaws.services.db.RepositoryAlg.PaymentRepository
 import zio.Has
@@ -41,13 +41,13 @@ object PaymentUpdateProgramSpec extends DefaultRunnableSpec {
   )
 }
 
-object AmountMock extends Mock[Has[AmountValidation]] {
+object AmountMock extends Mock[Has[AmountValidationAlg]] {
   object Validate extends Effect[Amount, InvalidAmountError, Unit]
 
-  val compose: zio.URLayer[Has[zio.test.mock.Proxy], Has[AmountValidation]] =
+  val compose: zio.URLayer[Has[zio.test.mock.Proxy], Has[AmountValidationAlg]] =
     ZLayer.fromService(
       invoke =>
-        new AmountValidation {
+        new AmountValidationAlg {
           def validate(amount: Amount): zio.IO[InvalidAmountError, Unit] =
             invoke(Validate, amount)
         }

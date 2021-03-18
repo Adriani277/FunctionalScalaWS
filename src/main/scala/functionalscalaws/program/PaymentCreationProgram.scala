@@ -1,5 +1,6 @@
 package functionalscalaws.program
 
+import functionalscalaws.algebra.AmountValidationAlg
 import functionalscalaws.domain._
 import functionalscalaws.domain.db.PaymentData
 import functionalscalaws.services._
@@ -12,11 +13,11 @@ trait PaymentCreation {
 
 object PaymentCreation {
   val live: ZLayer[
-    Has[AmountValidation] with Has[TransactionValidation] with Has[PaymentRepository],
+    Has[AmountValidationAlg] with Has[TransactionValidation] with Has[PaymentRepository],
     Nothing,
     Has[PaymentCreation]
   ] = (for {
-    amountValidation      <- ZIO.service[AmountValidation]
+    amountValidation      <- ZIO.service[AmountValidationAlg]
     transactionValidation <- ZIO.service[TransactionValidation]
     repo                  <- ZIO.service[PaymentRepository]
   } yield new Program(amountValidation, transactionValidation, repo)).toLayer
@@ -25,7 +26,7 @@ object PaymentCreation {
     ZIO.accessM(_.get.create(payment))
 
   final class Program(
-      amountValidation: AmountValidation,
+      amountValidation: AmountValidationAlg,
       transactionValidation: TransactionValidation,
       repo: PaymentRepository
   ) extends PaymentCreation {
