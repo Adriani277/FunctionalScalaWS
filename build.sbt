@@ -15,7 +15,7 @@ lazy val root = (project in file("."))
 
 val http4sVersion     = "0.21.2"
 val pureConfigVersion = "0.12.3"
-val zioVersion = "1.0.5"
+val zioVersion        = "1.0.5"
 
 ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.4.3"
 
@@ -26,6 +26,7 @@ libraryDependencies ++= Seq(
   "io.github.gaelrenoux" %% "tranzactio"          % "1.2.0",
   "dev.zio"              %% "zio-interop-cats"    % "2.3.1.0",
   "io.github.kitlangton" %% "zio-magic"           % "0.1.12",
+  "dev.zio"              %% "zio-json"            % "0.1.2",
   "dev.zio"              %% "zio-config-magnolia" % "1.0.0-RC29",
   "dev.zio"              %% "zio-config-typesafe" % "1.0.0-RC29",
   "org.tpolecat"         %% "doobie-h2"           % "0.9.0",
