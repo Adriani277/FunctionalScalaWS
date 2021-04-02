@@ -1,10 +1,12 @@
 package functionalscalaws.http.views
 
 import functionalscalaws.domain._
-import io.circe.generic.JsonCodec
+import zio.json.DeriveJsonCodec
 
-@JsonCodec final case class ErrorResponse(error_message: String, error: String)
+final case class ErrorResponse(error_message: String, error: String)
 object ErrorResponse {
+  implicit val codec = DeriveJsonCodec.gen[ErrorResponse]
+
   val fromServiceError: ServiceError => ErrorResponse = {
     case InvalidAmountError(amount) =>
       ErrorResponse(s"Provided amount [${amount.value}] has to be greater than 0", "invalid_amount")

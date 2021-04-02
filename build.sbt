@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
   "io.github.gaelrenoux" %% "tranzactio"          % "1.2.0",
   "dev.zio"              %% "zio-interop-cats"    % "2.3.1.0",
   "io.github.kitlangton" %% "zio-magic"           % "0.1.12",
-  "dev.zio"              %% "zio-json"            % "0.1.2",
+  "dev.zio"              %% "zio-json"            % "0.1.3",
   "dev.zio"              %% "zio-config-magnolia" % "1.0.0-RC29",
   "dev.zio"              %% "zio-config-typesafe" % "1.0.0-RC29",
   "org.tpolecat"         %% "doobie-h2"           % "0.9.0",
@@ -38,7 +38,6 @@ libraryDependencies ++= Seq(
   "io.chrisdavenport"    %% "log4cats-slf4j"      % "1.0.1",
   "ch.qos.logback"       % "logback-classic"      % "1.2.3",
   "org.http4s"           %% "http4s-circe"        % http4sVersion,
-  "io.circe"             %% "circe-generic"       % "0.12.3",
   "mysql"                % "mysql-connector-java" % "8.0.17",
   //Test
   "dev.zio" %% "zio-test"     % zioVersion % "test",

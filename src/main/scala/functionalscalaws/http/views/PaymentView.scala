@@ -1,12 +1,11 @@
 package functionalscalaws.http.views
 
 import functionalscalaws.domain._
-import io.circe.Codec
-import io.circe.generic.semiauto._
+import zio.json._
 
 final case class PaymentView private (name: String, amount: Double, recipient: String)
 object PaymentView {
-  implicit val coded: Codec[PaymentView] = deriveCodec[PaymentView]
+  implicit val coded: JsonCodec[PaymentView] = zio.json.DeriveJsonCodec.gen[PaymentView]
 
   def toPayment(view: PaymentView): Payment =
     Payment(

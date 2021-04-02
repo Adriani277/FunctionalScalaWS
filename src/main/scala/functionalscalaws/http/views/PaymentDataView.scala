@@ -3,8 +3,8 @@ package functionalscalaws.http.views
 import java.util.UUID
 
 import functionalscalaws.domain.db.PaymentData
-import io.circe.Codec
-import io.circe.generic.semiauto._
+import zio.json.DeriveJsonEncoder
+import zio.json.JsonEncoder
 
 final case class PaymentDataView(
     id: UUID,
@@ -13,7 +13,7 @@ final case class PaymentDataView(
     recipient: String
 )
 object PaymentDataView {
-  implicit val encoder: Codec[PaymentDataView] = deriveCodec[PaymentDataView]
+  implicit val encoder: JsonEncoder[PaymentDataView] = DeriveJsonEncoder.gen[PaymentDataView]
 
   def fromPaymentData(payment: PaymentData): PaymentDataView =
     PaymentDataView(payment.id, payment.name.value, payment.amount.value, payment.recipient.value)
