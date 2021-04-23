@@ -11,12 +11,11 @@ import zhttp.service._
 import zhttp.service.server.ServerChannelFactory
 import zio._
 import zio.clock.Clock
-import zio.config.ZConfig
 import zio.logging.Logging
 import zio.magic._
 object Layers {
   type AppEnv = Logging
-    with ZConfig[Config]
+    with Has[Config]
     // with Persistence[User]
     // with UserProgram
     with Has[PaymentCreation]

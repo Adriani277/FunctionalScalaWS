@@ -2,7 +2,6 @@ package functionalscalaws
 
 import functionalscalaws.Config.DoobieConfig
 import zio._
-import zio.config._
 import zio.config.magnolia.DeriveConfigDescriptor.descriptor
 import zio.config.syntax._
 import zio.config.typesafe._
@@ -20,7 +19,7 @@ object Config {
 }
 
 package object configuration {
-  val liveConfig: ZLayer[Any, Throwable, ZConfig[Config]] =
+  val liveConfig: ZLayer[Any, Throwable, Has[Config]] =
     TypesafeConfig
       .fromHoconFile(new java.io.File("src/main/resources/application.conf"), descriptor[Config]).orDie
 

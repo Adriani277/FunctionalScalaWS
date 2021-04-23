@@ -15,7 +15,7 @@ lazy val root = (project in file("."))
 
 val http4sVersion     = "0.21.2"
 val pureConfigVersion = "0.12.3"
-val zioVersion        = "1.0.5"
+val zioVersion        = "1.0.7"
 
 ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.4.3"
 
@@ -23,14 +23,15 @@ coverageExcludedPackages := "functionalscalaws.Main; functionalscalaws.http.Http
 
 libraryDependencies ++= Seq(
   "dev.zio"              %% "zio"                     % zioVersion,
-  "io.github.gaelrenoux" %% "tranzactio"              % "1.2.0",
+  "io.github.gaelrenoux" %% "tranzactio"              % "2.0.0",
   "io.d11"               %% "zhttp"                   % "1.0.0.0-RC15",
   "dev.zio"              %% "zio-interop-cats"        % "2.3.1.0",
   "io.github.kitlangton" %% "zio-magic"               % "0.1.12",
   "dev.zio"              %% "zio-json"                % "0.1.4",
   "dev.zio"              %% "zio-json-interop-http4s" % "0.1.4",
-  "dev.zio"              %% "zio-config-magnolia"     % "1.0.0-RC29",
-  "dev.zio"              %% "zio-config-typesafe"     % "1.0.0-RC29",
+  "dev.zio"              %% "zio-config-magnolia"     % "1.0.4",
+  "dev.zio"              %% "zio-config"              % "1.0.4",
+  "dev.zio"              %% "zio-config-typesafe"     % "1.0.4",
   "org.tpolecat"         %% "doobie-h2"               % "0.9.0",
   "org.tpolecat"         %% "doobie-core"             % "0.8.8",
   "org.tpolecat"         %% "doobie-hikari"           % "0.8.8",
