@@ -1,18 +1,21 @@
 package functionalscalaws.http
 
-import org.http4s.HttpRoutes
-import org.http4s.dsl.Http4sDsl
+import zhttp.http._
 import zio._
-import zio.interop.catz._
+import zio.json._
 
-final class StatusEndpoint[R] {
-  type StatusTask[A] = RIO[R, A]
+object StatusEndpoint {
+  case class Test(name: String, surname: String)
+  implicit val codec = DeriveJsonCodec.gen[Test]
 
-  private val dsl = Http4sDsl[StatusTask]
-  import dsl._
-
-  val routes = HttpRoutes.of[StatusTask] {
-    case GET -> Root / "status" =>
-      Ok("""{"status":"ok"}""")
+  val route = Http.collectM {
+    case Method.GET -> Root / "status" => ZIO.succeed(Response.jsonString("""{"status":"ok"}"""))
+    case r @ Method.POST -> Root / "greet" =>
+      for {
+        bodyS <- ZIO
+          .fromOption(r.getBodyAsString)
+          .orElseFail(new RuntimeException("Could not read body"))
+        body <- ZIO.fromEither(bodyS.fromJson[Test]).mapError(new RuntimeException(_))
+      } yield Response.text(s"Have received [$body]")
   }
 }

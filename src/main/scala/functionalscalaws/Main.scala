@@ -9,12 +9,11 @@ object Main extends zio.App {
     program.provideCustomLayer(Layers.live.appLayer).exitCode
 
   private val program: ZIO[Layers.AppEnv, Throwable, Unit] =
-    for {
+    (for {
       _ <- log.info("Starting HTTP server")
       _ <- log.info("Creating DB")
       _ <- PreStartupProgram.createTable
-      f <- HttpServer.make.useForever.fork
-      _ <- log.info("HTTP server started")
-      _ <- f.await
-    } yield ()
+    } yield ()) *> HttpServer.server.use { _ =>
+      log.info("HTTP server started") *> ZIO.never
+    }
 }

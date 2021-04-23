@@ -7,12 +7,13 @@ import functionalscalaws.program._
 import functionalscalaws.services._
 import functionalscalaws.services.db.HTransactor
 import functionalscalaws.services.db.RepositoryAlg
+import zhttp.service._
+import zhttp.service.server.ServerChannelFactory
 import zio._
 import zio.clock.Clock
 import zio.config.ZConfig
 import zio.logging.Logging
 import zio.magic._
-
 object Layers {
   type AppEnv = Logging
     with ZConfig[Config]
@@ -23,6 +24,8 @@ object Layers {
     with Clock
     with Has[PreStartupProgram]
     with Has[RepositoryAlg.PaymentRepository]
+    with ServerChannelFactory
+    with EventLoopGroup
 
   object live {
     //For database access comment lines 31/32 and uncomment 28/30
@@ -39,7 +42,9 @@ object Layers {
       PreStartupProgram.live,
       PaymentUpdateProgram.live,
       liveConfig,
-      consoleLogger
+      consoleLogger,
+      ServerChannelFactory.auto,
+      EventLoopGroup.auto(0)
     )
   }
 }
