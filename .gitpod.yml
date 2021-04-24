@@ -13,3 +13,6 @@ vscode:
 ports:
   - port: 8212
   - port: 8080
+
+tasks:
+  - command: zsh
