@@ -9,3 +9,7 @@ vscode:
   extensions:
     - scalameta.metals
     - k--kato.intellij-idea-keybindings
+
+ports:
+  - port: 8212
+  - port: 8080
