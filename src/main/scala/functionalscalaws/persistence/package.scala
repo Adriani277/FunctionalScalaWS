@@ -1,17 +1,13 @@
 package functionalscalaws
 
-import io.circe.generic.semiauto._
 import izumi.reflect.Tag
 import zio._
 import zio.clock.Clock
 import zio.logging._
 
+// NOTE: Not used
 package object persistence {
   final case class User(id: Int, v: String)
-  object User {
-    implicit val encoder = deriveEncoder[User]
-    implicit val decoder = deriveDecoder[User]
-  }
 
   type UserPersistenceRIO[A] = RIO[Persistence[User] with Clock, A]
   type Persistence[A]        = Has[Service[A]]

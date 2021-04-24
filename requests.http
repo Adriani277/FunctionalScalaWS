@@ -1,0 +1,20 @@
+### Create payment
+POST http://localhost:8080/payment/create
+content-type: application/json
+
+{"name": "Adriani", "amount": 15, "recipient": "Dave"}
+
+### Get all payments
+
+PUT http://localhost:8080/payment/update
+content-type: application/json
+
+{"id": "fb77cc4b-1feb-4ca5-9824-dc6c343809bc", "amount": 100}
+### Greet request
+POST http://localhost:8080/greet
+content-type: application/json
+
+{
+    "name": "sample",
+    "surname": "name"
+}
