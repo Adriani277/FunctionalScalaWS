@@ -11,7 +11,8 @@
 	// Note that some extensions may not work in Alpine Linux. See https://aka.ms/vscode-remote/linux.
 	"extensions": [
 		"scalameta.metals",
-		"eamodio.gitlens"
+		"eamodio.gitlens",
+		"patbenatar.advanced-new-file"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
