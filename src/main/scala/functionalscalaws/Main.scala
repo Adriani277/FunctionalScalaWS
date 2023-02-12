@@ -3,11 +3,19 @@ package functionalscalaws
 // import functionalscalaws.http.HttpServer
 // import functionalscalaws.program.PreStartupProgram
 import zio._
+
 // import zio.logging._
+
+final case class Example(name: String)
+
 object Main extends ZIOAppDefault {
   
 
-  override def run: ZIO[Any & (ZIOAppArgs & Scope), Any, Any] = Console.printLine("test")
+  override def run: ZIO[Any & (ZIOAppArgs & Scope), Any, Any] = 
+  (for{
+    config <- ZIO.service[MyConfig]
+    _ <- Console.printLine(config.toString)
+  } yield ()).provideLayer(MyConfig.live)
 
   // program.provideCustomLayer(Layers.live.appLayer).exitCode
 

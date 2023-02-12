@@ -18,7 +18,7 @@ val zioVersion        = "2.0.8"
 
 ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.4.3"
 
-coverageExcludedPackages := "functionalscalaws.Main; functionalscalaws.http.HttpServer; functionalscalaws.Layers"
+// coverageExcludedPackages := "functionalscalaws.Main; functionalscalaws.http.HttpServer; functionalscalaws.Layers"
 
 libraryDependencies ++= Seq(
   "dev.zio"              % "zio_3"                     % zioVersion,
@@ -27,9 +27,9 @@ libraryDependencies ++= Seq(
   // "dev.zio"              %% "zio-interop-cats"        % "2.3.1.0",
   "dev.zio"              % "zio-json_3"                % "0.4.2",
   // "dev.zio"              % "zio-json-interop-http4s" % "0.4.2",
-  // "dev.zio"              %% "zio-config-magnolia"     % "3.0.7",
-  // "dev.zio"              %% "zio-config"              % "3.0.7",
-  // "dev.zio"              %% "zio-config-typesafe"     % "3.0.7",
+  "dev.zio"              % "zio-config-magnolia_3"     % "3.0.7",
+  "dev.zio"              % "zio-config_3"              % "3.0.7",
+  "dev.zio"              % "zio-config-typesafe_3"     % "3.0.7",
   // // "org.tpolecat"         %% "doobie-h2"               % "0.9.0",
   // "org.tpolecat"         %% "doobie-core"             % "0.8.8",
   // "org.tpolecat"         %% "doobie-hikari"           % "0.8.8",
