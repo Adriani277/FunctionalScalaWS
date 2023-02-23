@@ -1,20 +1,16 @@
-// package functionalscalaws.program
-// import functionalscalaws.services.db.RepositoryAlg.PaymentRepository
-// import zio._
+package functionalscalaws.program
+import functionalscalaws.services.db.PaymentRepository
+import zio._
 
-// trait PreStartupProgram {
-//   def createTable: UIO[Unit]
-// }
+trait PreStartupProgramAlg {
+  def createTable: UIO[Unit]
+}
 
-// object PreStartupProgram {
-//   val live: ZLayer[Has[PaymentRepository],Nothing,Has[PreStartupProgram]] = (for {
-//     db <- ZIO.service[PaymentRepository]
-//   } yield new Program(db)).toLayer
+final case class PreStartupProgram(database: PaymentRepository) extends PreStartupProgramAlg {
+  def createTable: UIO[Unit] = database.createTable
+}
 
-//   val createTable: URIO[Has[PreStartupProgram], Unit] =
-//     ZIO.accessM(_.get.createTable)
-
-//   final class Program(database: PaymentRepository) extends PreStartupProgram {
-//     def createTable: zio.UIO[Unit] = database.createTable
-//   }
-// }
+object PreStartupProgram {
+  val live: ZIO[PaymentRepository, Nothing, PreStartupProgramAlg] =
+    ZIO.service[PaymentRepository].map(PreStartupProgram(_))
+}
