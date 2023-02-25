@@ -1,14 +1,41 @@
-// package functionalscalaws.http
+package functionalscalaws.http
 
-// import functionalscalaws.http.views._
 // import functionalscalaws.program._
-// import functionalscalaws.services.db.RepositoryAlg
-// import zhttp.http.Method._
-// import zhttp.http._
-// import zio._
-// import zio.json._
+import functionalscalaws.services.db.RepositoryAlg
+import zio.json._
+import zio.http._
+import zio.http.model.Method
+import zio._
+import functionalscalaws.http.views._
+import zio.http.model.Status
+import zio.http.model.Headers.Header
+import zio.http.model.Method._
+import functionalscalaws.domain.db.PaymentData
+final case class PaymentsEndpoint(private val db: RepositoryAlg[PaymentData]) {
+  val routes = Http.collectZIO {
+    case r @ POST -> !! / "payment" / "create" =>
+      for {
+        viewString <- r.body.asString
+        _          <- ZIO.logInfo(s"Received request: $viewString")
+        view       <- ZIO.fromEither(viewString.fromJson[PaymentView])
+        payment    <- PaymentView.toPayment(view)
+        result     <- db.create(payment)
+        _          <- ZIO.logInfo(s"Created payment with id: ${result.id}")
+      } yield {
+        Response.json(PaymentDataView.fromPaymentData(result).toJson).setStatus(Status.Created)
+      }
 
-// object PaymentsEndpoint {
+    case GET -> !! / "payments" =>
+      for {
+        payments <- db.selectAll
+        result = Response.json(payments.map(PaymentDataView.fromPaymentData).toJson)
+      } yield result
+  }
+}
+
+object PaymentsEndpoint {
+  val live = ZLayer.fromZIO(ZIO.service[RepositoryAlg[PaymentData]].map(new PaymentsEndpoint(_)))
+}
 //   private def jsonResponse[A] =
 //     (status: Status, data: String) =>
 //       Response.http(
@@ -18,7 +45,7 @@
 //           data
 //         )
 //       )
-
+//  val routes = Ht
 //   val routes = Http.collectM {
 //     case r @ POST -> Root / "payment" / "create" =>
 //       for {

@@ -2,10 +2,12 @@
 POST http://localhost:8080/payment/create
 content-type: application/json
 
-{"name": "Adriani", "amount": 15, "recipient": "Dave"}
+{"name": "Adriani", "amount": 19, "beneficiary": "Dave"}
 
 ### Get all payments
+GET http://localhost:8080/payments
 
+### update payment
 PUT http://localhost:8080/payment/update
 content-type: application/json
 
@@ -18,3 +20,6 @@ content-type: application/json
     "name": "sample",
     "surname": "name"
 }
+
+### status request
+GET http://localhost:8080/status

@@ -12,50 +12,45 @@ trait RepositoryAlg[A] {
   def create(payment: Payment): UIO[A]
   def update(amount: AmountUpdate): UIO[A]
   def selectAll: UIO[List[A]]
-  def createTable: UIO[Unit]
 }
 
-final case class PaymentRepository(quill: Quill.H2[SnakeCase]) {
+final case class PaymentRepository(quill: Quill.H2[SnakeCase]) extends RepositoryAlg[PaymentData] {
   import quill._
 
-  def createTable: UIO[Unit] =
-    ZIO.logInfo("Creating table") *>
+  def create(payment: Payment): UIO[PaymentData] =
+    (run {
+      quote {
+        query[PaymentData]
+          .insert(
+            _.id          -> lift(payment.id),
+            _.name        -> lift(payment.name.value),
+            _.beneficiary -> lift(payment.beneficiary.value),
+            _.amount      -> lift(payment.amount.value.toString)
+          )
+          .returning(_.id)
+      }
+    }.orDie flatMap { id =>
       run {
         quote {
-
-          sql"""CREATE TABLE payments (
-                id VARCHAR(36),
-                name VARCHAR(255),
-                amount DECIMAL(12, 2),
-                recipient VARCHAR(255)
-                )""".asCondition
+          query[PaymentData]
+            .filter(a => a.id == lift(id))
+            .distinct
         }
-      }.orDie.ignore
-
-  inline def create(payment: Payment): ZIO[Any, SQLException, PaymentData] =
-    run {
-      query[PaymentData]
-        .insert(
-          _.name      -> payment.name,
-          _.recipient -> payment.recipient,
-          _.amount    -> payment.amount
-        )
-        .returning(identity)
-    }
+      }.head
+    })
+      .tapErrorCause { e => ZIO.logError(e.prettyPrint) }
+      .orDieWith {
+        case Some(e) => e
+        case None    => new SQLException("No payment found")
+      }
 
   def update(amount: AmountUpdate): UIO[PaymentData] = ???
-  // runIO {
-  //   quote {
-  //     query[PaymentData].filter(_.id == lift(amount.id)).update(_.amount -> lift(amount.amount))
-  //   }
-  // }.map(_ => PaymentData(amount.id, amount.amount))
-
-  def selectAll: UIO[List[PaymentData]] = ???
-  // runIO {
-  //   quote {
-  //     query[PaymentData]
-  //   }
-  // }
+  def selectAll: UIO[List[PaymentData]] =
+    run {
+      quote {
+        query[PaymentData]
+      }
+    }.tapErrorCause { e => ZIO.logError(e.prettyPrint) }.orDie
 
 }
 

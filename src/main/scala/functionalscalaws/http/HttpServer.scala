@@ -4,9 +4,11 @@ import zio.http._
 import zio.ZIO
 
 object HttpServer {
-  private val app = StatusEndpoint.route
+  val run = ZIO.service[PaymentsEndpoint].flatMap { paymentEndpoint =>
+    val endpoints = paymentEndpoint.routes.withDefaultErrorResponse ++ StatusEndpoint.route
 
-  val server = Server.install(app).flatMap { port =>
-    ZIO.logInfo(s"HTTP server started on port $port")
-  } *> ZIO.never
+    Server.install(endpoints).flatMap { port =>
+      ZIO.logInfo(s"HTTP server started on port $port")
+    } *> ZIO.never
+  }
 }

@@ -2,4 +2,4 @@ package functionalscalaws.domain
 
 import java.util.UUID
 
-final case class Payment private (id: UUID, name: Name, amount: Amount, recipient: Recipient)
+final case class Payment(id: UUID, name: Name, amount: Amount, beneficiary: Beneficiary)

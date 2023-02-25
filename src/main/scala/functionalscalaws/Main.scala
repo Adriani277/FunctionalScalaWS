@@ -1,16 +1,15 @@
 package functionalscalaws
 
 import functionalscalaws.http.HttpServer
-import functionalscalaws.program.PreStartupProgram
 import zio._
 import zio.http.Server
-import functionalscalaws.program.PreStartupProgramAlg
 import functionalscalaws.services.db.PaymentRepository
 import io.getquill.jdbczio.Quill.H2
 import io.getquill.context.ZioJdbc.DataSourceLayer
 import io.getquill.jdbczio.Quill.DataSource
 import io.getquill.jdbczio.Quill
 import io.getquill.SnakeCase
+import functionalscalaws.http.PaymentsEndpoint
 
 // import zio.logging._
 
@@ -27,17 +26,20 @@ object Main extends ZIOAppDefault {
       MyConfig.live,
       PaymentRepository.live,
       Quill.H2.fromNamingStrategy(SnakeCase),
-      DataSource.fromPrefix("databaseConfig")
+      DataSource.fromPrefix("databaseConfig"),
+      PaymentsEndpoint.live,
+      Server.default
     )
 
   // program.provideCustomLayer(Layers.live.appLayer).exitCode
 
-  private val program: ZIO[PaymentRepository, Throwable, Unit] =
+  private val program =
     (for {
       _ <- ZIO.logInfo("Starting HTTP server")
       _ <- ZIO.logInfo("Creating DB")
-      _ <- PreStartupProgram.live.map(_.createTable)
-      _ <- HttpServer.server.provide(Server.default)
+      _ <- Migrations.migrate
+      // _ <- PreStartupProgram.live.flatMap(_.createTable)
+      _ <- HttpServer.run
     } yield ())
     //  *> HttpServer.server.use { _ =>
     //   log.info("HTTP server started") *> ZIO.never
