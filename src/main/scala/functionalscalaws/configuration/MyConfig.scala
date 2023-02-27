@@ -1,4 +1,4 @@
-package functionalscalaws
+package functionalscalaws.configuration
 
 import zio._
 import zio.config.magnolia._
@@ -18,11 +18,3 @@ object MyConfig {
   val live = zio.config.ZConfig
     .fromHoconFilePath("src/main/resources/application.conf", descriptor[MyConfig])
 }
-
-// package object configuration {
-//   val liveConfig: ZLayer[Any, Throwable, Has[Config]] =
-//     TypesafeConfig
-//       .fromHoconFile(new java.io.File("src/main/resources/application.conf"), descriptor[Config]).orDie
-
-//   val doobieConfig = liveConfig.narrow[Config.DoobieConfig](_.doobie)
-// }

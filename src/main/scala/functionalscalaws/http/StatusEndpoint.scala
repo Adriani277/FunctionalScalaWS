@@ -10,4 +10,6 @@ object StatusEndpoint {
   val route = Http.collect { case Method.GET -> !! / "status" =>
     Response.json(Json.Str("OK").toJson)
   }
+
+  val live = ZLayer.succeed(this)
 }

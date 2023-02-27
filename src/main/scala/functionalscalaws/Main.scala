@@ -3,19 +3,19 @@ package functionalscalaws
 import functionalscalaws.http.HttpServer
 import zio._
 import zio.http.Server
-import functionalscalaws.services.db.PaymentRepository
 import io.getquill.jdbczio.Quill.H2
 import io.getquill.context.ZioJdbc.DataSourceLayer
 import io.getquill.jdbczio.Quill.DataSource
 import io.getquill.jdbczio.Quill
 import io.getquill.SnakeCase
-import functionalscalaws.http.PaymentsEndpoint
 
-// import zio.logging._
+import functionalscalaws.configuration.MyConfig
+import functionalscalaws.http.NoteEndpoints
+import functionalscalaws.services.NoteService
+import functionalscalaws.db.NoteRepository
+import functionalscalaws.http.StatusEndpoint
 
-final case class Example(name: String)
-
-object Main extends ZIOAppDefault {
+object Main extends ZIOAppDefault:
 
   override def run: ZIO[Any & (ZIOAppArgs & Scope), Any, Any] =
     (for {
@@ -24,24 +24,19 @@ object Main extends ZIOAppDefault {
       _      <- program
     } yield ()).provide(
       MyConfig.live,
-      PaymentRepository.live,
       Quill.H2.fromNamingStrategy(SnakeCase),
       DataSource.fromPrefix("databaseConfig"),
-      PaymentsEndpoint.live,
-      Server.default
+      Server.default,
+      NoteEndpoints.live,
+      NoteService.live,
+      NoteRepository.live,
+      StatusEndpoint.live
     )
-
-  // program.provideCustomLayer(Layers.live.appLayer).exitCode
 
   private val program =
     (for {
-      _ <- ZIO.logInfo("Starting HTTP server")
       _ <- ZIO.logInfo("Creating DB")
       _ <- Migrations.migrate
-      // _ <- PreStartupProgram.live.flatMap(_.createTable)
+      _ <- ZIO.logInfo("Starting HTTP server")
       _ <- HttpServer.run
     } yield ())
-    //  *> HttpServer.server.use { _ =>
-    //   log.info("HTTP server started") *> ZIO.never
-    // }
-}

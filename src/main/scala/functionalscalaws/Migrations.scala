@@ -7,8 +7,8 @@ import zio.ZIO
 import zio.ZIOAppArgs
 import org.flywaydb.core.Flyway
 
+import functionalscalaws.configuration.MyConfig
 object Migrations {
-
   val migrate: ZIO[MyConfig, Throwable, Unit] = for {
     config <- ZIO.service[MyConfig]
     _ <- ZIO.attemptBlocking(
@@ -19,5 +19,4 @@ object Migrations {
         .migrate()
     )
   } yield ()
-
 }

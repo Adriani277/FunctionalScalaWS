@@ -1,11 +1,14 @@
-### Create payment
-POST http://localhost:8080/payment/create
+### Create note
+POST http://localhost:8080/note/create
 content-type: application/json
 
-{"name": "Adriani", "amount": 19, "beneficiary": "Dave"}
+{"title": "First note", "content": "Hello World", "tags": []}
 
-### Get all payments
-GET http://localhost:8080/payments
+### Get all notes
+GET http://localhost:8080/notes
+
+### Get all note titles
+GET http://localhost:8080/note/titles
 
 ### update payment
 PUT http://localhost:8080/payment/update
